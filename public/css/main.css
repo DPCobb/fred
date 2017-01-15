@@ -1,0 +1,412 @@
+/**
+ * Daniel Cobb
+ * ASL - nmbley v1.0
+ * 1-8-2017
+ */
+
+/*----- Bootstrap Changes -----*/
+.navbar, .navbar-inverse{
+    width:100%;
+    border-radius:0;
+    border:none;
+    background: #629976;
+    color:#fff;
+    height:50px;
+}
+.navbar-nav{
+    float:right;
+    width:50%;
+}
+.navbar-nav > li{
+    float:right;
+    color:inherit;
+}
+.navbar-inverse .navbar-nav>li>a{
+    color:inherit;
+    font-size:2em;
+}
+.navbar-header{
+    float:none;
+    width:10%;
+    margin:0 1%;
+    display:inline-block;
+}
+
+.btn-success{
+    background:#629976;
+    border-radius:3px;
+    box-shadow: 2px 3px 5px rgba(0,0,0,.4);
+    margin:0 auto;
+}
+.btn-success:hover{
+    border:none;
+}
+.alert{
+    margin-top:2%;
+}
+.row{
+    max-width: 100%;
+}
+
+/*----- Utility classes for Bootstrap -----*/
+.no-padding{
+    padding:0;
+}
+.center {
+    text-align: center;
+}
+.push-15{
+    padding-top:15%;
+}
+.small-link{
+    color:#bbbbbc;
+    font-size:8pt;
+    text-decoration: underline;
+}
+.small-link-right{
+    position: absolute;
+    right:5%;
+    bottom:5%;
+}
+
+.small-link[title="View Comments"]{
+    position: absolute;
+    right:40%;
+    bottom:5%;
+}
+.small-link[title="Report"]{
+    position: absolute;
+    right:5%;
+    bottom:5%;
+}
+.trim-padding{
+    padding-right:0 !important;
+}
+
+
+/*----- Globals -----*/
+html, body {
+    background-color: #e8eaef;
+    color: #333335;
+    font-family: 'Open Sans', sans-serif;
+    height: 100vh;
+    margin: 0;
+}
+h1, h2{
+    font-family: 'Cooper Black';
+    padding:0;
+    margin:0 1%;
+}
+h3, h4{
+    font-weight:800;
+}
+.sidebar h4:nth-of-type(2), .sidebar h4:nth-of-type(3){
+    margin-top:10%;
+}
+h1{
+    display:inline-block;
+}
+.comment-form-reply h5{
+    color:#fff;
+}
+a{
+    padding:0;
+    margin:0;
+    color:inherit;
+}
+form{
+    width:96%;
+    padding:2%;
+    background:#fcfcfc;
+    border-radius:5px;
+    box-shadow:2px 3px 5px rgba(0,0,0,.4);
+    position:relative;
+    height:300px;
+    text-align: center;
+}
+.cat-form{
+    height:250px;
+}
+.comment-form, .comment-form-edit{
+    background:none;
+    border-radius:0;
+    box-shadow:none;
+    width:100%;
+    text-align: left;
+    height:60px;
+}
+.comment-form-reply, .comment-form-edit{
+    width:50vw;
+    height:25vh;
+    margin:10% auto;
+}
+input[type="text"], textarea{
+    width:96%;
+    padding:1%;
+    border-radius:5px;
+    background:#fff;
+    border:1px solid #d0d3d6;
+    margin:auto;
+}
+.comment-form input[type="text"], .comment-form-edit input[type="text"]{
+    width:80%;
+    margin:auto 2%;
+}
+input[type="file"]{
+    width:96%;
+    padding:1%;
+    border-radius:5px;
+    border:1px solid #d0d3d6;
+    margin:auto;
+}
+
+textarea{
+    resize:none;
+    height:94.5px;
+}
+button[type="submit"]{
+    background:#629976;
+    border:none;
+    height:50px;
+    width:50px;
+    border-radius:60%;
+    box-shadow:2px 3px 5px rgba(0,0,0,.4);
+    position: absolute;
+    bottom:20px;
+    right:5%;
+    text-align: center;
+    font-size:2em;
+    color:#fff;
+    transition-duration: 500ms;
+}
+button[type="submit"]:hover, .comment-form input[type="submit"]:hover, .comment-form-edit input[type="submit"]:hover{
+    transform:scale(1.1);
+}
+.comment-form input[type="submit"], .comment-form-edit input[type="submit"]{
+    background:#629976;
+    border:none;
+    box-shadow:2px 3px 5px rgba(0,0,0,.4);
+    text-align: center;
+    font-size:.8em;
+    padding:1% 2%;
+    border-radius:3px;
+    color:#fff;
+    transition-duration: 500ms;
+}
+/* used to create form button styles */
+.button-round{
+    border:none;
+    height:50px;
+    width:50px;
+    border-radius:60%;
+    box-shadow:2px 3px 5px rgba(0,0,0,.4);
+    position: absolute;
+    bottom:20px;
+    text-align: center;
+    font-size:2em;
+    color:#fff;
+    transition-duration: 500ms;
+}
+.button-round:hover{
+    color:#fff;
+    cursor: pointer;
+    transform:scale(1.1);
+}
+.blue{
+    background:#6988b7;
+    left:4%;
+}
+.red{
+    background:#b74c37;
+    right:15%;
+}
+
+article{
+    margin:2% auto;
+    width:96%;
+    padding:2%;
+    background:#fcfcfc;
+    border-radius:5px;
+    box-shadow:2px 3px 5px rgba(0,0,0,.4);
+    position: relative;
+}
+article > h5{
+    font-size:22pt;
+    font-weight:800;
+}
+article > h6{
+    font-size:14pt;
+    font-weight:700;
+}
+article > h6 a{
+    text-decoration: underline;
+}
+article > img{
+    margin:0 auto;
+    display:block;
+    max-width: 100%;
+}
+
+
+/*----- Welcome Page -----*/
+#val-prop{
+    padding:10% 2%;
+}
+#val-prop p{
+    width:75%;
+}
+#val-prop h2{
+    font-size:4em;
+    margin:0;
+}
+#val-prop > .btn-lg{
+    margin-top:2%;
+}
+
+/*----- Home Page -----*/
+#photo{
+    display:none;
+}
+.feed{
+    margin-top:10%;
+}
+.buttons{
+    width:100%;
+    padding:2% 0;
+    position: relative;
+}
+article .button-action{
+    border:none;
+    height:50px;
+    width:50px;
+    border-radius:60%;
+    box-shadow:2px 3px 5px rgba(0,0,0,.4);
+    text-align: center;
+    font-size:1.5em;
+    color:#fff;
+    transition-duration: 500ms;
+    background:#629976;
+    padding-top:10px;
+    display:inline-block;
+    margin-right:2%;
+}
+.button-action:hover{
+    color:#fff;
+    cursor: pointer;
+    transform:scale(1.1);
+}
+article .blue-action{
+    background:#6988b7;
+}
+article .orange-action{
+    background:#dd9e4a;
+}
+
+.text-post{
+    width:100%;
+    padding:2%;
+    background:#fcfcfc;
+    border-radius:5px;
+    box-shadow:2px 3px 5px rgba(0,0,0,.4);
+}
+
+.suggestions{
+    display:none;
+    text-align: center;
+    text-transform: capitalize;
+    font-size:.7em;
+    width:30%;
+    margin:0 auto;
+    background:rgba(0,0,0,.1);
+    border-radius:3px;
+    padding:2px;
+}
+.suggestlink{
+    display:block;
+}
+
+/*----- Comments -----*/
+.comments{
+    display:none;
+}
+.comments h6{
+    font-weight: 700;
+    font-size:.75em;
+    font-style: italic;
+}
+.add-comment{
+    display:none;
+}
+.small-link-button{
+    border:none;
+    padding-bottom:0;
+    background:transparent;
+    color:#bbbbbc;
+    font-size:8pt;
+    text-decoration: underline;
+}
+.small-link[title="Edit Post"]{
+    position: absolute;
+    bottom:5%;
+    right:20%;
+}
+.delete-form{
+    background:none;
+    width:auto;
+    display:inline-block;
+    padding:0;
+    height:auto;
+    box-shadow:none;
+}
+.modal{
+    width:100%;
+    padding:0;
+    position:fixed;
+    top:0;
+    bottom:0;
+    z-index: 100;
+    background:rgba(0,0,0,.5);
+    height:100vh;
+}
+
+/*----- Post Edit Modal -----*/
+.post-edit{
+    display:none;
+    height:100vh;
+    width:100vw;
+    background:rgba(0,0,0,.5);
+}
+.post-edit form{
+    width:50%;
+    height:350px;
+    margin:10% auto;
+
+}
+#editphoto, #edit-text{
+    display:none;
+}
+.thumb{
+    max-width:20%;
+    margin:0 auto;
+}
+/*----- left side bar -----*/
+#cat-search{
+    background:none;
+    height:50px;
+    box-shadow:none;
+    text-align: left;
+    padding:0;
+}
+.cat-list{
+    width:96%;
+    padding:2%;
+    height:300px;
+}
+.follow-link{
+    text-transform:capitalize;
+    display:block;
+    text-decoration: underline;
+}
+.small-cat-form{
+    box-shadow: none;
+}
