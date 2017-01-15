@@ -1,3 +1,8 @@
+/**
+ * Daniel Cobb
+ * ASL - nmbley v1.0
+ * 1-8-2017
+ */
 $(document).ready(function(){
 
     // Hide view comments link if there are no comments

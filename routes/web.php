@@ -10,6 +10,12 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+/**
+ * Daniel Cobb
+ * ASL - nmbley v1.0
+ * 1-8-2017
+ */
 use App\Post;
 use Illuminate\Http\Request;
 
