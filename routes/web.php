@@ -52,7 +52,7 @@ Route::post('/update/comment', 'PostController@editComment');
 
 // Not yet used routes for messaging and logging out
 Route::get('/messages/{id}', function ($id) {
-    return view('messages',['id'=>$id]);
+    return view('messages', ['id'=>$id]);
 });
 Route::get('/signout', function () {
     return view('signout');
