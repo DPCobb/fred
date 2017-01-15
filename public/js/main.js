@@ -24,7 +24,7 @@ $(document).ready(function(){
     function cancelListen(){
         $('.cancel').on('click', function(e){
             e.preventDefault();
-            $('input').val('');
+            $('input[id="title"], input[id="cat"]').val('');
             $('textarea').val('');
             $('.suggestions').hide();
         });
@@ -332,5 +332,6 @@ $(document).ready(function(){
 // call catSearch and closeModal
 catSearch();
 closeModal();
+cancelListen();
 // End JS
 })
