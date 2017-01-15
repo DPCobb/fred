@@ -140,38 +140,63 @@ class PostController extends Controller
         ->select('categorys.catId')
         ->where('categorys.name', $current)
         ->get();
-        $cats = DB::table('follows')
-        ->join('categorys', 'categorys.catId', '=', 'follows.catId')
-        ->where('userId', $myId)
-        ->get();
-        $myPosts = DB::table('posts')
-        ->join('categorys', 'posts.categoryId', '=', 'categorys.catId')
-        ->join('users', 'posts.user', '=', 'users.userId')
-        ->select('posts.*', 'categorys.*', 'users.*')
-        ->where('categorys.name', $category)
-        ->latest()
-        ->get();
-        $comments = DB::table('comments')
-        ->join('users', 'comments.userId', 'users.userId')
-        ->select('comments.*', 'users.fname as first', 'users.lname as last')
-        ->oldest()
-        ->get();
-        $likes = DB::table('likes')
-        ->select('likes.postId as likedPost')
-        ->where('likes.userId', session('id'))
-        ->get();
-        $replies = DB::table('commentRelatives')
-        ->join('comments', 'comments.commentId', 'commentRelatives.commentId')
-        ->join('users', 'users.userId', 'comments.userId')
-        ->oldest()
-        ->get();
-        $follows = DB::table('follows')
-        ->where([['follows.catId', '=', $catId[0]->catId], ['follows.userId', '=', $myId]])
-        ->get();
         // if the category does not exist
         if ($catId->isEmpty()) {
-            return view('nocategory', ['cats'=>$cats, 'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'categoryname'=>$current, 'categoryid'=>$catId[0]->catId, 'follows'=>$follows]);
+            $cats = DB::table('follows')
+            ->join('categorys', 'categorys.catId', '=', 'follows.catId')
+            ->where('userId', $myId)
+            ->get();
+            $myPosts = DB::table('posts')
+            ->join('categorys', 'posts.categoryId', '=', 'categorys.catId')
+            ->join('users', 'posts.user', '=', 'users.userId')
+            ->select('posts.*', 'categorys.*', 'users.*')
+            ->where('categorys.name', $category)
+            ->latest()
+            ->get();
+            $comments = DB::table('comments')
+            ->join('users', 'comments.userId', 'users.userId')
+            ->select('comments.*', 'users.fname as first', 'users.lname as last')
+            ->oldest()
+            ->get();
+            $likes = DB::table('likes')
+            ->select('likes.postId as likedPost')
+            ->where('likes.userId', session('id'))
+            ->get();
+            $replies = DB::table('commentRelatives')
+            ->join('comments', 'comments.commentId', 'commentRelatives.commentId')
+            ->join('users', 'users.userId', 'comments.userId')
+            ->oldest()
+            ->get();
+            return view('nocategory', ['cats'=>$cats, 'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'categoryname'=>$current]);
         } else {
+            $cats = DB::table('follows')
+            ->join('categorys', 'categorys.catId', '=', 'follows.catId')
+            ->where('userId', $myId)
+            ->get();
+            $myPosts = DB::table('posts')
+            ->join('categorys', 'posts.categoryId', '=', 'categorys.catId')
+            ->join('users', 'posts.user', '=', 'users.userId')
+            ->select('posts.*', 'categorys.*', 'users.*')
+            ->where('categorys.name', $category)
+            ->latest()
+            ->get();
+            $comments = DB::table('comments')
+            ->join('users', 'comments.userId', 'users.userId')
+            ->select('comments.*', 'users.fname as first', 'users.lname as last')
+            ->oldest()
+            ->get();
+            $likes = DB::table('likes')
+            ->select('likes.postId as likedPost')
+            ->where('likes.userId', session('id'))
+            ->get();
+            $replies = DB::table('commentRelatives')
+            ->join('comments', 'comments.commentId', 'commentRelatives.commentId')
+            ->join('users', 'users.userId', 'comments.userId')
+            ->oldest()
+            ->get();
+            $follows = DB::table('follows')
+            ->where([['follows.catId', '=', $catId[0]->catId], ['follows.userId', '=', $myId]])
+            ->get();
             return view('category', ['cats'=>$cats, 'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'categoryname'=>$current, 'replies'=>$replies, 'categoryid'=>$catId[0]->catId, 'follows'=>$follows]);
         }
     }
