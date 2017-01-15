@@ -60,6 +60,7 @@ $(document).ready(function(){
                             // if the length of the response is 0 the category does not exist
                             if(response.length == 0){
                                 $(this).closest('form').find('.suggestions').html('Suggestions:<br>This category doesn\'t exist yet!');
+                                $(this).closest('form').find('button').attr('disabled', true);
                             }
                             // if the length is greater than zero, loop through results
                             else{
@@ -69,6 +70,7 @@ $(document).ready(function(){
                                 }
                                 // find the suggestions box and display the results
                                 $(this).closest('form').find('.suggestions').html(display);
+                                $(this).closest('form').find('button').attr('disabled', false);
                                 // add listen function for clicks on the category name links to add them to category input
                                 addListen();
                             }
