@@ -165,11 +165,7 @@ $(document).ready(function(){
             $('.modal').fadeOut();
         });
         // stops form clicks from propagating to the modal
-        $('.comment-form-reply, .comment-form-edit').on('click', function(e){
-            e.stopPropagation();
-        });
-        // stops form clicks from propagating to the modal
-        $('#edit-text, #editphoto').on('click', function(e){
+        $('.comment-form-reply, .comment-form-edit, #edit-text, #editphoto').on('click', function(e){
             e.stopPropagation();
         });
 

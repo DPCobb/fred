@@ -34,7 +34,7 @@ class HomeController extends Controller
         $posts = DB::table('follows')
         ->join('posts', 'follows.catId', '=', 'posts.categoryId')
         ->join('categorys', 'follows.catId', '=', 'categorys.catId')
-        ->join('users', 'follows.userId', '=', 'users.userId')
+        ->leftJoin('users', 'posts.user', '=', 'users.userId')
         ->select('follows.catId', 'posts.*', 'categorys.*', 'users.*')
         ->where('follows.userId', $id)
         ->latest()
