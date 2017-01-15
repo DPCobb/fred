@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace app\Http\Controllers;
 
 use Validator;
 use Illuminate\Http\Request;
@@ -49,8 +49,7 @@ class MyContent extends Controller
         ->join('users', 'users.userId', 'comments.userId')
         ->oldest()
         ->get();
-        return view('myposts', ['cats'=>$cats,'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies]);
-
+        return view('myposts', ['cats'=>$cats, 'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies]);
     }
 
     /**
@@ -63,5 +62,4 @@ class MyContent extends Controller
         DB::table('posts')->where('postId', $id)->where('user', session('id'))->delete();
         return redirect('/activity/myposts');
     }
-
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace app\Http\Controllers;
 
 use Validator;
 use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class ApiController extends Controller
     {
         // search for category names like $data
         $catList = DB::table('categorys')
-        ->where('name', 'LIKE','%' . $data . '%')
+        ->where('name', 'LIKE', '%' . $data . '%')
         ->limit(3)
         ->get();
         return response($catList);
@@ -41,7 +41,7 @@ class ApiController extends Controller
         $comment->postId = $post;
         $comment->msg = $msg;
         $comment->userId = session('id');
-        $comment->commentId = substr(hash('md5',time() . session('id')),0,10);
+        $comment->commentId = substr(hash('md5', time() . session('id')), 0, 10);
         $comment->parent = $parent;
         $comment->save();
     }
@@ -86,7 +86,7 @@ class ApiController extends Controller
 
         DB::table('posts')
         ->where('id', $id)
-        ->update(['title'=>$title,'category'=>$catId]);
+        ->update(['title'=>$title, 'category'=>$catId]);
         return response('success');
     }
 
@@ -95,9 +95,10 @@ class ApiController extends Controller
      * @param  string $data [search terms]
      * @return array       [search results]
      */
-    public function search($data){
+    public function search($data)
+    {
         $list = DB::table('categorys')
-        ->where('name', 'LIKE','%' . $data . '%')
+        ->where('name', 'LIKE', '%' . $data . '%')
         ->limit(10)
         ->get();
         return response($list);
@@ -115,7 +116,6 @@ class ApiController extends Controller
         $follow->userId = $user;
         $follow->catId = $request->id;
         $follow->save();
-
     }
 
     /**
@@ -129,5 +129,4 @@ class ApiController extends Controller
         $id = $request->id;
         DB::table('follows')->where('catId', $id)->where('userId', $user)->delete();
     }
-
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace app\Http\Controllers;
 
 use Validator;
 use Illuminate\Http\Request;
@@ -16,7 +16,8 @@ class HomeController extends Controller
      * builds the home page
      * @return array [returns the array of data for the view]
      */
-    public function homeView(){
+    public function homeView()
+    {
         // get the user id
         $id = session('id');
         // get followed categories
@@ -52,5 +53,4 @@ class HomeController extends Controller
         ->get();
         return view('home', ['cats'=>$cats, 'posts'=>$posts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies]);
     }
-
 }

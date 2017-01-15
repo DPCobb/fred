@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace app\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,11 +33,10 @@ class SocialAuthController extends Controller
         $id = $id;
         $nameFull = $name;
         // if the user exists do nothing
-        if(DB::table('users')->where('userId', $id)->value('userId')){
-
+        if (DB::table('users')->where('userId', $id)->value('userId')) {
         }
         // if the user does not exist add to db
-        else{
+        else {
             // explode the full name to get first and last names
             $name = explode(" ", $nameFull);
             // add user
@@ -45,7 +44,6 @@ class SocialAuthController extends Controller
                 ['userId' => $id, 'fname' => $name[0], 'lname' => $name[1]]
             );
         }
-
     }
 
     /**
