@@ -44,7 +44,7 @@ Route::get('/c/{category}', 'PostController@catHome');
 Route::get('/api/search/{data}', 'ApiController@categoryList');
 Route::get('/api/getpost/{data}', 'ApiController@getPost');
 Route::get('/api/getcomment/{data}', 'ApiController@getComment');
-Route::get('/api/reply/{post}/{parent}/{msg}', 'ApiController@reply');
+Route::post('/api/reply', 'ApiController@reply');
 Route::get('/api/category/search/{data}', 'ApiController@search');
 Route::post('/api/category/follow', 'ApiController@follow');
 Route::delete('/api/category/unfollow', 'ApiController@unfollow');

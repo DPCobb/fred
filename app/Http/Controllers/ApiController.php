@@ -40,14 +40,14 @@ class ApiController extends Controller
      * @param  text $msg    [reply text]
      * @return null
      */
-    public function reply($post, $parent, $msg)
+    public function reply(Request $request)
     {
         $comment = new Comment;
-        $comment->postId = $post;
-        $comment->msg = $msg;
+        $comment->postId = $request->postId;
+        $comment->msg = $request->msg;
         $comment->userId = session('id');
         $comment->commentId = substr(hash('md5', time() . session('id')), 0, 10);
-        $comment->parent = $parent;
+        $comment->parent = $request->parent;
         $comment->save();
     }
 

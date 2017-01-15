@@ -177,10 +177,20 @@ $(document).ready(function(){
             var postId = $('#replypostid').val();
             var parent = $('#replycomid').val();
             var msg = $('#newreply').val();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
             $.ajax({
-                type: "GET",
-                url: "/api/reply/"+ postId +"/"+ parent+"/" + msg,
+                type: "POST",
+                url: "api/reply",
                 dataType: "json",
+                data:{
+                    'postId': postId,
+                    'msg' : msg,
+                    'parent' : parent
+                },
                 success: function(response){
 
                 }
