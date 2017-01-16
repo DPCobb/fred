@@ -7,13 +7,11 @@
         <div class="buttons">
             <div class="button-action" title="Points">{{$post->likes}}</div>
             <div class="button-action blue-action" title="Add Comment"><i class="fa fa-plus" aria-hidden="true"></i></div>
-            @foreach ($likes as $like)
-                @if ($like->likedPost == $post->postId )
-                    <div class="button-action orange-action liked" title="You liked this!"><i class="fa fa-heart" aria-hidden="true"></i></div>
-                @else
-                    <div class="button-action orange-action" title="Favorite"><i class="fa fa-heart-o" aria-hidden="true"></i></div>
-                @endif
-            @endforeach
+            @if ( !empty($post->likedBy) && $post->likedBy == session('id') )
+                <div class="button-action orange-action liked" title="You liked this!" data-action="unlike" data-id="{{$post->postId}}"><i class="fa fa-heart" aria-hidden="true"></i></div>
+            @else
+                <div class="button-action orange-action" title="Favorite" data-action="like" data-id="{{$post->postId}}"><i class="fa fa-heart-o" aria-hidden="true"></i></div>
+            @endif
             <a href="#" title="View Comments" class="small-link comment">View Comments</a>
             <form class="delete-form small-link-right" action="/activity/myposts/delete/{{$post->postId}}" method="POST">
                 {{ csrf_field() }}
@@ -42,13 +40,11 @@
         <div class="buttons">
             <div class="button-action" title="Points">{{$post->likes}}</div>
             <div class="button-action blue-action" title="Add Comment"><i class="fa fa-plus" aria-hidden="true"></i></div>
-            @foreach ($likes as $like)
-                @if ($like->likedPost == $post->postId )
-                    <div class="button-action orange-action liked" title="You liked this!"><i class="fa fa-heart" aria-hidden="true"></i></div>
-                @else
-                    <div class="button-action orange-action" title="Favorite"><i class="fa fa-heart-o" aria-hidden="true"></i></div>
-                    @endif
-            @endforeach
+            @if ( !empty($post->likedBy) && $post->likedBy == session('id') )
+                <div class="button-action orange-action liked" title="You liked this!" data-action="unlike" data-id="{{$post->postId}}"><i class="fa fa-heart" aria-hidden="true"></i></div>
+            @else
+                <div class="button-action orange-action" title="Favorite" data-action="like" data-id="{{$post->postId}}"><i class="fa fa-heart-o" aria-hidden="true"></i></div>
+            @endif
             <a href="#" title="View Comments" class="small-link comment">View Comments</a>
             <form class="delete-form small-link-right" action="/activity/myposts/delete/{{$post->postId}}" method="POST">
                 {{ csrf_field() }}

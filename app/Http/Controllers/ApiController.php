@@ -12,8 +12,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Response;
 use App\Post;
+use App\Like;
 use App\Comment;
 use App\Follow;
+use App\Category;
 use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
@@ -133,5 +135,36 @@ class ApiController extends Controller
         $user = session('id');
         $id = $request->id;
         DB::table('follows')->where('catId', $id)->where('userId', $user)->delete();
+    }
+    public function like(Request $request)
+    {
+        $user = session('id');
+        $like = new Like;
+        $like->postId = $request->id;
+        $like->userId = $user;
+        $like->save();
+
+    }
+    public function unlike(Request $request)
+    {
+        $user = session('id');
+        $post = $request->id;
+        $unlike = DB::table('likes')->where([['postId', $post], ['userId', $user]])->delete();
+        return response($unlike);
+    }
+    public function newCategory(Request $request)
+    {
+        $newcategory = $request->name;
+        if(DB::table('categorys')->where('name', $newcategory)->value('name')){
+            return 'This category already exists.';
+        }
+        else{
+            $category = new Category;
+            $category->adminId = session('id');
+            $category->name = $newcategory;
+            $category->catId = hash('md5', time() . $newcategory);
+            $category->save();
+            return 'Category Created!';
+        }
     }
 }

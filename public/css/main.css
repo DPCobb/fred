@@ -410,3 +410,8 @@ article .orange-action{
 .small-cat-form{
     box-shadow: none;
 }
+.alert{
+    display:none;
+    width:96%;
+    padding:2%;
+}

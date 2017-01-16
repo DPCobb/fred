@@ -48,6 +48,9 @@ Route::post('/api/reply', 'ApiController@reply');
 Route::get('/api/category/search/{data}', 'ApiController@search');
 Route::post('/api/category/follow', 'ApiController@follow');
 Route::delete('/api/category/unfollow', 'ApiController@unfollow');
+Route::post('/api/like', 'ApiController@like');
+Route::delete('/api/unlike', 'ApiController@unlike');
+Route::post('/api/newcategory', 'ApiController@newCategory');
 
 // Post Updates
 Route::post('/update/photo', 'PostController@editPhoto');

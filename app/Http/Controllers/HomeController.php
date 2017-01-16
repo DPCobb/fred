@@ -34,10 +34,11 @@ class HomeController extends Controller
         $posts = DB::table('follows')
         ->join('posts', 'follows.catId', '=', 'posts.categoryId')
         ->join('categorys', 'follows.catId', '=', 'categorys.catId')
-        ->leftJoin('users', 'posts.user', '=', 'users.userId')
-        ->select('follows.catId', 'posts.*', 'categorys.*', 'users.*')
+        ->join('users', 'posts.user', '=', 'users.userId')
+        ->leftJoin('likes', [['likes.postId', '=', 'posts.postId'], ['likes.userId', '=', 'follows.userId']])
+        ->select('follows.catId', 'posts.*', 'categorys.*', 'users.*', 'likes.postId as liked', 'likes.userId as likedBy')
         ->where('follows.userId', $id)
-        ->latest()
+        ->latest('posts.updated_at')
         ->get();
         // get the comments for posts
         $comments = DB::table('comments')
@@ -56,6 +57,9 @@ class HomeController extends Controller
         ->join('users', 'users.userId', 'comments.userId')
         ->oldest()
         ->get();
-        return view('home', ['cats'=>$cats, 'posts'=>$posts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies]);
+        $admin = DB::table('categorys')
+        ->where('adminId', $id)
+        ->get();
+        return view('home', ['cats'=>$cats, 'posts'=>$posts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies, 'admin'=>$admin]);
     }
 }

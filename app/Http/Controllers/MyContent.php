@@ -33,9 +33,10 @@ class MyContent extends Controller
         $myPosts = DB::table('posts')
         ->join('categorys', 'posts.categoryId', '=', 'categorys.catId')
         ->join('users', 'posts.user', '=', 'users.userId')
-        ->select('posts.*', 'categorys.*', 'users.*')
+        ->leftJoin('likes', [['likes.postId', '=', 'posts.postId'], ['likes.userId', '=', 'users.userId']])
+        ->select('posts.*', 'categorys.*', 'users.*', 'likes.postId as liked', 'likes.userId as likedBy')
         ->where('posts.user', $myId)
-        ->latest()
+        ->latest('posts.updated_at')
         ->get();
         // get comments
         $comments = DB::table('comments')
@@ -54,7 +55,10 @@ class MyContent extends Controller
         ->join('users', 'users.userId', 'comments.userId')
         ->oldest()
         ->get();
-        return view('myposts', ['cats'=>$cats, 'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies]);
+        $admin = DB::table('categorys')
+        ->where('adminId', $myId)
+        ->get();
+        return view('myposts', ['cats'=>$cats, 'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies, 'admin'=>$admin]);
     }
 
     /**

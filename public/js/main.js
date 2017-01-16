@@ -341,6 +341,79 @@ $(document).ready(function(){
             }
         });
     });
+
+    $('.orange-action').on('click', function(){
+        var action = $(this).attr('data-action');
+        var id = $(this).attr('data-id');
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        if(action == "like"){
+            $.ajax({
+                type:"POST",
+                url:"/api/like",
+                data:{
+                    'id': id
+                },
+                success: function(){
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+        }
+        else {
+            $.ajax({
+                type:"delete",
+                url:"/api/unlike",
+                data:{
+                    'id': id
+                },
+                success: function(){
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+        }
+
+
+    });
+    $('.createcat').on('click', function(e){
+        e.preventDefault();
+        var newCat = $(this).closest('form').find('#newcat').val();
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url:"/api/newcategory",
+            data:{
+                'name': newCat
+            },
+            success: function(response){
+                $('.alert').addClass('alert-success');
+                $('.alert').html(response);
+                $('.alert').fadeIn();
+            },
+            error: function (response) {
+                $('.alert').addClass('alert-danger');
+                $('.alert').html(response);
+                $('.alert').fadeIn();
+            }
+        });
+    });
+    $('.alert').on('click', function(){
+        $('.alert').fadeOut(2000);
+    });
+
+
 // call catSearch and closeModal
 catSearch();
 closeModal();

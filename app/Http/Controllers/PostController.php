@@ -167,7 +167,10 @@ class PostController extends Controller
             ->join('users', 'users.userId', 'comments.userId')
             ->oldest()
             ->get();
-            return view('nocategory', ['cats'=>$cats, 'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'categoryname'=>$current]);
+            $admin = DB::table('categorys')
+            ->where('adminId', $myId)
+            ->get();
+            return view('nocategory', ['cats'=>$cats, 'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'categoryname'=>$current, 'admin'=>$admin]);
         } else {
             $cats = DB::table('follows')
             ->join('categorys', 'categorys.catId', '=', 'follows.catId')
@@ -176,9 +179,10 @@ class PostController extends Controller
             $myPosts = DB::table('posts')
             ->join('categorys', 'posts.categoryId', '=', 'categorys.catId')
             ->join('users', 'posts.user', '=', 'users.userId')
-            ->select('posts.*', 'categorys.*', 'users.*')
+            ->leftJoin('likes', [['likes.postId', '=', 'posts.postId'], ['likes.userId', '=', 'users.userId']])
+            ->select('posts.*', 'categorys.*', 'users.*', 'likes.postId as liked', 'likes.userId as likedBy')
             ->where('categorys.name', $category)
-            ->latest()
+            ->latest('posts.updated_at')
             ->get();
             $comments = DB::table('comments')
             ->join('users', 'comments.userId', 'users.userId')
@@ -197,7 +201,10 @@ class PostController extends Controller
             $follows = DB::table('follows')
             ->where([['follows.catId', '=', $catId[0]->catId], ['follows.userId', '=', $myId]])
             ->get();
-            return view('category', ['cats'=>$cats, 'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'categoryname'=>$current, 'replies'=>$replies, 'categoryid'=>$catId[0]->catId, 'follows'=>$follows]);
+            $admin = DB::table('categorys')
+            ->where('adminId', $myId)
+            ->get();
+            return view('category', ['cats'=>$cats, 'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'categoryname'=>$current, 'replies'=>$replies, 'categoryid'=>$catId[0]->catId, 'follows'=>$follows, 'admin'=>$admin]);
         }
     }
 
