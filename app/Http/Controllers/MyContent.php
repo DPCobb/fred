@@ -36,7 +36,7 @@ class MyContent extends Controller
         ->leftJoin('likes', [['likes.postId', '=', 'posts.postId'], ['likes.userId', '=', 'users.userId']])
         ->select('posts.*', 'categorys.*', 'users.*', 'likes.postId as liked', 'likes.userId as likedBy')
         ->where('posts.user', $myId)
-        ->latest('posts.updated_at')
+        ->latest('posts.created_at')
         ->get();
         // get comments
         $comments = DB::table('comments')

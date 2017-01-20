@@ -91,6 +91,7 @@ html, body {
     font-family: 'Open Sans', sans-serif;
     height: 100vh;
     margin: 0;
+    font-size:10pt;
 }
 h1, h2{
     font-family: 'Righteous', cursive;
@@ -100,7 +101,7 @@ h1, h2{
 h3, h4{
     font-weight:800;
 }
-.sidebar h4:nth-of-type(2), .sidebar h4:nth-of-type(3){
+.sidebar h4:nth-of-type(2), .sidebar h4:nth-of-type(3), .sidebar h4:nth-of-type(4){
     margin-top:10%;
 }
 h1{
@@ -231,11 +232,11 @@ article{
     position: relative;
 }
 article > h5{
-    font-size:22pt;
+    font-size:14pt;
     font-weight:800;
 }
 article > h6{
-    font-size:14pt;
+    font-size:10pt;
     font-weight:700;
 }
 article > h6 a{
@@ -246,7 +247,6 @@ article > img{
     display:block;
     max-width: 100%;
 }
-
 
 /*----- Welcome Page -----*/
 #val-prop{
@@ -264,6 +264,9 @@ article > img{
 }
 
 /*----- Home Page -----*/
+.myposts{
+    text-decoration: underline;
+}
 #photo{
     display:none;
 }
@@ -414,4 +417,41 @@ article .orange-action{
     display:none;
     width:96%;
     padding:2%;
+}
+
+/*----- user options modal -----*/
+.message-form{
+    width:50%;
+    margin:10% auto;
+    position: relative;
+
+}
+
+/*----- messages page -----*/
+.read, .reply-btn, .del{
+    border:none;
+    border-radius:5px;
+    box-shadow:2px 3px 5px rgba(0,0,0,.4);
+    background:#6988b7;
+    color:#fff;
+    padding:1% 2%;
+    transition-duration: 500ms;
+    margin-right:5%;
+}
+.reply-btn{
+    background:#629976;
+}
+.del{
+    background:#b74c37;
+}
+.read:hover, .reply-btn:hover, .del:hover{
+    transform:scale(1.1);
+}
+.actions{
+    margin-top:5%;
+    text-align: right;
+}
+.replies{
+    margin:2% auto;
+    display:none;
 }

@@ -51,18 +51,22 @@ Route::delete('/api/category/unfollow', 'ApiController@unfollow');
 Route::post('/api/like', 'ApiController@like');
 Route::delete('/api/unlike', 'ApiController@unlike');
 Route::post('/api/newcategory', 'ApiController@newCategory');
+Route::post('/api/message/send', 'ApiController@sendMessage');
+Route::get('/api/message/mail', 'ApiController@gotMail');
+Route::post('/api/message/markread', 'ApiController@read');
+Route::post('/api/message/deleteread', 'ApiController@deleteMsgR');
+Route::post('/api/message/deletesend', 'ApiController@deleteMsgS');
+Route::post('/api/message/reply', 'ApiController@replyMessage');
 
 // Post Updates
 Route::post('/update/photo', 'PostController@editPhoto');
 Route::post('/update/text', 'PostController@editText');
 Route::post('/update/comment', 'PostController@editComment');
 
+// Messages View
+Route::get('/messages/{id}', 'MessageController@messageView');
 
-
-// Not yet used routes for messaging and logging out
-Route::get('/messages/{id}', function ($id) {
-    return view('messages', ['id'=>$id]);
-});
+// Not yet used route for logging out
 Route::get('/signout', function () {
     return view('signout');
 });

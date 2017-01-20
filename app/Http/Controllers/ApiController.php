@@ -16,6 +16,7 @@ use App\Like;
 use App\Comment;
 use App\Follow;
 use App\Category;
+use App\Message;
 use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
@@ -166,5 +167,68 @@ class ApiController extends Controller
             $category->save();
             return 'Category Created!';
         }
+    }
+    public function sendMessage(Request $request)
+    {
+        $sender = session('id');
+        $message = new Message;
+        $message->msgId = hash('md5', time() . $sender);
+        $message->sender = $sender;
+        $message->reciever = $request->recieve;
+        $message->subject = $request->subject;
+        $message->text = $request->message;
+        $message->parentId = 0;
+        $message->read = 0;
+        $message->senddel = 0;
+        $message->readdel = 0;
+        $message->save();
+        return 'Message Sent';
+
+    }
+
+    public function gotMail()
+    {
+        $msg = DB::table('messages')->where([['reciever', session('id')], ['read', '0']])->get();
+        return($msg);
+    }
+    public function read(Request $request)
+    {
+        DB::table('messages')
+        ->where('msgId', $request->id)
+        ->update(['read'=>1]);
+        return 'success';
+    }
+    public function deleteMsgR(Request $request)
+    {
+        DB::table('messages')
+        ->where('msgId', $request->id)
+        ->update(['readdel'=>1, 'read'=>1]);
+        return 'success';
+    }
+    public function deleteMsgS(Request $request)
+    {
+        DB::table('messages')
+        ->where('msgId', $request->id)
+        ->update(['senddel'=>1]);
+        return 'success';
+    }
+
+    public function replyMessage(Request $request)
+    {
+        $sender = session('id');
+        $message = new Message;
+        $message->msgId = hash('md5', time() . $sender);
+        $message->sender = $sender;
+        $message->reciever = $request->recieve;
+        $message->parentId = $request->parent;
+        $message->text = $request->message;
+        $message->read = 2;
+        $message->senddel = 0;
+        $message->readdel = 0;
+        $message->save();
+        DB::table('messages')
+        ->where('msgId', $request->parent)
+        ->update(['read'=>0]);
+        return 'Message Sent';
     }
 }

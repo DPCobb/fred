@@ -182,7 +182,7 @@ class PostController extends Controller
             ->leftJoin('likes', [['likes.postId', '=', 'posts.postId'], ['likes.userId', '=', 'users.userId']])
             ->select('posts.*', 'categorys.*', 'users.*', 'likes.postId as liked', 'likes.userId as likedBy')
             ->where('categorys.name', $category)
-            ->latest('posts.updated_at')
+            ->latest('posts.created_at')
             ->get();
             $comments = DB::table('comments')
             ->join('users', 'comments.userId', 'users.userId')

@@ -7,7 +7,5 @@
     <div class="cat-list">
 
     </div>
-    <h4>Create a New Category</h4>
-    <!-- Create new category form -->
-    @include ('common/createcategorysmall')
+    
 </div>

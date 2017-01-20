@@ -2,7 +2,7 @@
     @if ($post->type == 1)
     <article class="text-post">
         <h5>{{ $post->title }}</h5>
-        <h6>Posted in <a href="/c/{{ ucfirst($post->name)}}" title="{{ ucfirst($post->name)}}">{{ ucfirst($post->name)}}</a> by {{$post->fname}} {{$post->lname}}</h6>
+        <h6>Posted in <a href="/c/{{ ucfirst($post->name)}}" title="{{ ucfirst($post->name)}}">{{ ucfirst($post->name)}}</a> by <a href="#" class="useroptions" data-id="{{$post->user}}" data-name="{{$post->fname}} {{$post->lname}}" >{{$post->fname}} {{$post->lname}}</a></h6>
         <p>{{$post->text}}</p>
         <div class="buttons">
             <div class="button-action" title="Points">{{$post->likes}}</div>
@@ -30,7 +30,7 @@
     @else
     <article class="text-post">
         <h5>{{ $post->title }}</h5>
-        <h6>Posted in <a href="/c/{{ ucfirst($post->name)}}" title="{{ ucfirst($post->name)}}">{{ ucfirst($post->name)}}</a> by {{$post->fname}} {{$post->lname}}</h6>
+        <h6>Posted in <a href="/c/{{ ucfirst($post->name)}}" title="{{ ucfirst($post->name)}}">{{ ucfirst($post->name)}}</a> by <a href="#" class="useroptions" data-id="{{$post->user}}" data-name="{{$post->fname}} {{$post->lname}}" >{{$post->fname}} {{$post->lname}}</a></h6>
         <img src="../{{$post->image}}" alt="{{$post->title}}"/>
         <div class="buttons">
             <div class="button-action" title="Points">{{$post->likes}}</div>

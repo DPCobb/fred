@@ -38,7 +38,7 @@ class HomeController extends Controller
         ->leftJoin('likes', [['likes.postId', '=', 'posts.postId'], ['likes.userId', '=', 'follows.userId']])
         ->select('follows.catId', 'posts.*', 'categorys.*', 'users.*', 'likes.postId as liked', 'likes.userId as likedBy')
         ->where('follows.userId', $id)
-        ->latest('posts.updated_at')
+        ->latest('posts.created_at')
         ->get();
         // get the comments for posts
         $comments = DB::table('comments')
@@ -60,6 +60,7 @@ class HomeController extends Controller
         $admin = DB::table('categorys')
         ->where('adminId', $id)
         ->get();
-        return view('home', ['cats'=>$cats, 'posts'=>$posts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies, 'admin'=>$admin]);
+        $msg = DB::table('messages')->where('reciever', session('id'))->get();
+        return view('home', ['cats'=>$cats, 'posts'=>$posts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies, 'admin'=>$admin, 'msg'=>$msg]);
     }
 }

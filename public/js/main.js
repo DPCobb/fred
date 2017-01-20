@@ -5,6 +5,32 @@
  */
 $(document).ready(function(){
 
+    // Stop Modal Forms from closing Modal
+    $('form').on('click', function(e){
+        e.stopPropagation();
+    });
+
+    function getMsgs(){
+        var mail = '<i class="fa fa-envelope" aria-hidden="true"></i>';
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        // send data
+        $.ajax({
+            type:"GET",
+            url:"/api/message/mail",
+            success: function(data){
+                if(data.length > 0){
+                    $('.nav').find('#messages').html(mail);
+                }
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+    }
     // Hide view comments link if there are no comments
     $('.comments').each(function(i){
         if($(this).children().length === 0){
@@ -413,8 +439,186 @@ $(document).ready(function(){
         $('.alert').fadeOut(2000);
     });
 
+    $('.useroptions').on('click', function(e){
+        e.preventDefault();
+        var reciever = $(this).attr('data-id');
+        var name = $(this).attr('data-name');
+        $('#user-name').html(name);
+        $('#recieve').val(reciever);
+        $('.message-modal').fadeIn(function(){
+            $('.message-form').on('click', function(e){
+                e.stopPropagation();
+            });
+            $('.cancel').on('click', function(){
+                $('.message-modal').fadeOut();
+            });
+        });
 
-// call catSearch and closeModal
+    });
+
+    $('#message-sub').on('click', function(e){
+        e.preventDefault();
+        var recieve = $('#recieve').val();
+        var message = $('#message').val();
+        var subject = $('#subject').val();
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url:"/api/message/send",
+            data:{
+                'recieve': recieve,
+                'message': message,
+                'subject': subject
+            },
+            success: function(response){
+                $('.message-modal').fadeOut();
+            },
+            error: function (response) {
+                $('.message-form').find('.alert').addClass('alert-danger').html('Your message could not be sent.');
+                $('.alert').on('click', function(){
+                    $('.alert').fadeOut(2000);
+                });
+            }
+        });
+    });
+
+    $('.read').on('click', function(e){
+        e.preventDefault();
+        var msg = $(this).attr('data-msg');
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url:"/api/message/markread",
+            data:{
+                'id': msg
+            },
+            success: function(response){
+                location.reload();
+            },
+            error: function (response) {
+
+            }
+        });
+
+    })
+    $('.del').on('click', function(e){
+        e.preventDefault();
+        var msg = $(this).attr('data-msg');
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url:"/api/message/deleteread",
+            data:{
+                'id': msg
+            },
+            success: function(response){
+                location.reload();
+            },
+            error: function (response) {
+
+            }
+        });
+
+    });
+
+    $('.reply-btn').on('click', function(e){
+        e.preventDefault();
+        var name = $(this).closest('article').find('.useroptions').attr('data-name');
+        var reciever = $(this).attr('data-to');
+        var parent = $(this).attr('data-msg');
+        $('.message-reply').find('#parent').val(parent);
+        $('.message-reply').find('#recieve').val(reciever);
+        $('.message-reply').find('#user-name').html(name);
+        $('.message-reply').fadeIn(function(){
+            $('.cancel').on('click', function(){
+                $('.message-modal').fadeOut();
+
+            });
+        });
+    });
+
+    $('#message-rep').on('click', function(e){
+        e.preventDefault();
+        var parent = $(this).closest('.message-form').find('#parent').val();
+        var message = $(this).closest('.message-form').find('#message').val();
+        var recieve = $(this).closest('.message-form').find('#recieve').val();
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url:"/api/message/reply",
+            data:{
+                'recieve': recieve,
+                'message': message,
+                'parent': parent
+            },
+            success: function(response){
+                $('.message-modal').fadeOut();
+            },
+            error: function (response) {
+                $('.message-form').find('.alert').addClass('alert-danger').html('Your message could not be sent.');
+                $('.alert').on('click', function(){
+                    $('.alert').fadeOut(2000);
+                });
+            }
+        });
+    });
+    $('.hide-rep').on('click', function(e){
+        e.preventDefault();
+        $(this).closest('article').find('.replies').slideToggle();
+        if($(this).text() == "Hide Replies"){
+            $(this).text("Show Replies");
+        }
+        else{
+            $(this).text("Show Replies");
+        }
+    });
+    $('.replies').each(function(i){
+        if($(this).children().length === 0){
+            $(this).closest('article').find('.hide-rep').hide();
+        }
+        else{
+            $(this).closest('article').find('.hide-rep').show();
+        }
+    });
+    $('.useroptionsrep').on('click', function(e){
+        e.preventDefault();
+        var reciever = $(this).attr('data-id');
+        var name = $(this).attr('data-name');
+        var parent = $(this).attr('data-msg');
+        $('.message-reply').find('#user-name').html(name);
+        $('.message-reply').find('#recieve').val(reciever);
+        $('.message-reply').find('#parent').val(parent);
+        $('.message-reply').fadeIn(function(){
+            $('.message-form').on('click', function(e){
+                e.stopPropagation();
+            });
+            $('.cancel').on('click', function(){
+                $('.message-modal').fadeOut();
+            });
+        });
+
+    });
+
+
+// call functions
+getMsgs();
 catSearch();
 closeModal();
 cancelListen();
