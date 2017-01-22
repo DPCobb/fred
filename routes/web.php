@@ -13,8 +13,8 @@
 
 /**
  * Daniel Cobb
- * ASL - nmbley v1.0
- * 1-8-2017
+ * ASL - nmbley v2.0
+ * 1-22-2017
  */
 use App\Post;
 use Illuminate\Http\Request;
@@ -30,6 +30,7 @@ Route::get('/', function () {
 
 // Home
 Route::get('/home', 'HomeController@homeView');
+Route::get('/links', 'HomeController@links');
 Route::post('home/{type}', 'PostController@post');
 Route::delete('/home/comment/delete/{id}', 'PostController@deleteComment');
 
@@ -57,6 +58,8 @@ Route::post('/api/message/markread', 'ApiController@read');
 Route::post('/api/message/deleteread', 'ApiController@deleteMsgR');
 Route::post('/api/message/deletesend', 'ApiController@deleteMsgS');
 Route::post('/api/message/reply', 'ApiController@replyMessage');
+
+//Route::get('/api/home', 'ApiController@homeView');
 
 // Post Updates
 Route::post('/update/photo', 'PostController@editPhoto');

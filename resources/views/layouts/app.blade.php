@@ -16,6 +16,12 @@
     <!-- Styles -->
     <link href="../css/app.css" rel="stylesheet" type="text/css">
     <link href="../css/main.css" rel="stylesheet" type="text/css">
+
+    <!-- ReactJS
+    <script src="https://unpkg.com/react@15/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>
+    -->
 </head>
 
     <body>
@@ -32,6 +38,7 @@
                             <li><a href="/signout" title="Sign Out"><i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
                             <li><a href="/home" title="Home"><i class="fa fa-home" aria-hidden="true"></i></a></li>
                             <li><a href="/messages/'.$id.'" title="Messages" id="messages"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></li>
+                            <li class="visible-xs"><a href="/links" title="Links"><i class="fa fa-bars" aria-hidden="true"></i></a></li>
                         </ul>
 
 

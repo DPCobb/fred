@@ -1,8 +1,8 @@
 <?php
 /**
  * Daniel Cobb
- * ASL - nmbley v1.0
- * 1-8-2017
+ * ASL - nmbley v2.0
+ * 1-22-2017
  */
 
 namespace app\Http\Controllers;
@@ -62,5 +62,21 @@ class HomeController extends Controller
         ->get();
         $msg = DB::table('messages')->where('reciever', session('id'))->get();
         return view('home', ['cats'=>$cats, 'posts'=>$posts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies, 'admin'=>$admin, 'msg'=>$msg]);
+    }
+    public function links()
+    {
+        // get the user id
+        $id = session('id');
+        // get followed categories
+        $cats = DB::table('follows')
+        ->join('categorys', 'categorys.catId', '=', 'follows.catId')
+        ->where('userId', $id)
+        ->get();
+
+        $admin = DB::table('categorys')
+        ->where('adminId', $id)
+        ->get();
+        $msg = DB::table('messages')->where('reciever', session('id'))->get();
+        return view('links', ['cats'=>$cats, 'admin'=>$admin, 'msg'=>$msg]);
     }
 }

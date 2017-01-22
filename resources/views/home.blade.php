@@ -18,7 +18,7 @@
         <!-- Validator error display template -->
         @include('common.errors')
         <div class="row">
-            <div class="col-sm-12 feed">
+            <div class="col-sm-12 feed" id="feed">
                 <!-- Post display format is created as its own blade template under
                 common/postdisplay so it can be consistent in all views -->
                 @include('common.postdisplay')

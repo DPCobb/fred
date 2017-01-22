@@ -1,15 +1,48 @@
 /**
  * Daniel Cobb
- * ASL - nmbley v1.0
- * 1-8-2017
+ * ASL - nmbley v2.0
+ * 1-22-2017
  */
 $(document).ready(function(){
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+/**
+ *
+ * Global Event Listeners
+ *  ex: Forms - Stop Click Propagation so modal doesn't close
+ *
+ */
 
     // Stop Modal Forms from closing Modal
     $('form').on('click', function(e){
         e.stopPropagation();
     });
 
+    // Confirmation for delete
+    $('.delete-form').on('submit', function(){
+        return confirm("This is forever, are you sure??");
+    });
+
+    // alert area fade out
+    $('.alert').on('click', function(){
+        $('.alert').fadeOut(2000);
+    });
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+/**
+ *
+ * Basic Page Setup features
+ *  ex: Messages: change icon if user has unread mail
+ */
+
+    // Get direct messages and change mail icon if needed
     function getMsgs(){
         var mail = '<i class="fa fa-envelope" aria-hidden="true"></i>';
         $.ajaxSetup({
@@ -31,6 +64,8 @@ $(document).ready(function(){
             }
         });
     }
+
+
     // Hide view comments link if there are no comments
     $('.comments').each(function(i){
         if($(this).children().length === 0){
@@ -41,10 +76,61 @@ $(document).ready(function(){
         }
     });
 
-    // Confirmation for delete
-    $('.delete-form').on('submit', function(){
-        return confirm("This is forever, are you sure??");
+    // toggle the add comment form
+    $('.blue-action').on('click', function(e){
+        e.preventDefault();
+        $(this).closest('article').find('.add-comment').slideToggle();
     });
+
+    // toggle the current comments
+    $('.comment').on('click', function(e){
+        e.preventDefault();
+        $(this).closest('article').find('.comments').slideToggle();
+        if($(this).text() == "View Comments"){
+            $(this).text("Hide Comments");
+        }
+        else{
+            $(this).text("View Comments");
+        }
+    });
+
+    // open the create category form
+    $('.create').on('click', function(){
+        $('.small-cat-form').slideToggle();
+    });
+
+    // hide the replies on user messages
+    $('.hide-rep').on('click', function(e){
+        e.preventDefault();
+        $(this).closest('article').find('.replies').slideToggle();
+        if($(this).text() == "Hide Replies"){
+            $(this).text("Show Replies");
+        }
+        else{
+            $(this).text("Show Replies");
+        }
+    });
+
+    // hide view replies if there are none
+    $('.replies').each(function(i){
+        if($(this).children().length === 0){
+            $(this).closest('article').find('.hide-rep').hide();
+        }
+        else{
+            $(this).closest('article').find('.hide-rep').show();
+        }
+    });
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+    /**
+     *
+     * Functions
+     *  ex: canelListen: clears on inputs on form when cancel is clicked
+     */
+
 
     // Function that clears inputs on cancel and hides suggestions
     function cancelListen(){
@@ -125,6 +211,27 @@ $(document).ready(function(){
         });
     }
 
+    // closes modals
+    function closeModal(){
+        $('.modal').on('click', function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            $('.modal').fadeOut();
+        });
+
+    };
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+    /**
+    *
+    * Create a New Post Form
+    *  Sets up the Text or Image form for new posts
+    */
+
+
     // Sets up the image post form
     $('#imgPost').on('click', function(e){
         e.preventDefault();
@@ -155,28 +262,57 @@ $(document).ready(function(){
             });
         });
     });
-    // toggle the add comment form
-    $('.blue-action').on('click', function(e){
-        e.preventDefault();
-        $(this).closest('article').find('.add-comment').slideToggle();
-    })
 
-    // toggle the current comments
-    $('.comment').on('click', function(e){
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+    /**
+     *
+     * Replies
+     *
+     */
+
+    // submits a reply to a comment
+    $('#reply-submit').on('click', function(e){
         e.preventDefault();
-        $(this).closest('article').find('.comments').slideToggle();
-        if($(this).text() == "View Comments"){
-            $(this).text("Hide Comments");
-        }
-        else{
-            $(this).text("View Comments");
-        }
+        // Set needed values
+        var postId = $('#replypostid').val();
+        var parent = $('#replycomid').val();
+        var msg = $('#newreply').val();
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type: "POST",
+            url: "api/reply",
+            dataType: "json",
+            data:{
+                'postId': postId,
+                'msg' : msg,
+                'parent' : parent
+            },
+            success: function(response){
+
+            }
+
+        });
+        // fades out modal
+        $('.modal').fadeOut();
+        location.reload();
+
     });
+
 
     // set up the reply modal data
     $('.reply').on('click', function(e){
+        // get needed values
         var postId = $(this).attr('data-postid');
         var commentId = $(this).attr('data-commentid');
+        // set values
         $('#replycomid').val(commentId);
         $('#replypostid').val(postId);
         e.preventDefault();
@@ -185,49 +321,16 @@ $(document).ready(function(){
         });
     })
 
-    // closes modals
-    function closeModal(){
-        $('.modal').on('click', function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            $('.modal').fadeOut();
-        });
-        // stops form clicks from propagating to the modal
-        $('.comment-form-reply, .comment-form-edit, #edit-text, #editphoto').on('click', function(e){
-            e.stopPropagation();
-        });
 
-        // submits a reply to a comment
-        $('#reply-submit').on('click', function(e){
-            e.preventDefault();
-            var postId = $('#replypostid').val();
-            var parent = $('#replycomid').val();
-            var msg = $('#newreply').val();
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                type: "POST",
-                url: "api/reply",
-                dataType: "json",
-                data:{
-                    'postId': postId,
-                    'msg' : msg,
-                    'parent' : parent
-                },
-                success: function(response){
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-                }
+    /**
+     *
+     * Edits
+     *
+     */
 
-            });
-            // fades out modal
-            $('.modal').fadeOut();
-            location.reload();
-
-        });
-    };
     // edit a post
     $('.edit').on('click', function(e){
         e.preventDefault();
@@ -273,6 +376,7 @@ $(document).ready(function(){
             })
         });
     });
+
     // edit a comment
     $('.com-edit').on('click', function(e){
         var commentid = $(this).attr('data-commentid');
@@ -290,9 +394,24 @@ $(document).ready(function(){
             });
         });
     });
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+    /**
+     *
+     * Category Search
+     *
+     */
+
+
     // search for categories
     $('#catsearch').on('keyup', function(){
+        // get the data to search for
         var data = $(this).val();
+        // if data is empty show no results
         if(data.length === 0){
             $('.cat-list').html('');
         }
@@ -317,6 +436,17 @@ $(document).ready(function(){
             }
         });
     });
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+    /**
+     *
+     * Follow/Unfollow Category
+     *
+     */
+
     // follow a category
     $('#catfollow').on('click', function(e){
         e.preventDefault();
@@ -342,6 +472,7 @@ $(document).ready(function(){
             }
         });
     });
+
     // unfollow a category
     $('#catunfollow').on('click', function(e){
         e.preventDefault();
@@ -368,14 +499,29 @@ $(document).ready(function(){
         });
     });
 
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+    /**
+     *
+     * Like/Unlike Post
+     *
+     */
+
+     // Like/Unlike a post
     $('.orange-action').on('click', function(){
+        // get the action to follow
         var action = $(this).attr('data-action');
+        // get the post id
         var id = $(this).attr('data-id');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        // if action is like
         if(action == "like"){
             $.ajax({
                 type:"POST",
@@ -391,6 +537,7 @@ $(document).ready(function(){
                 }
             });
         }
+        // if action is unlike
         else {
             $.ajax({
                 type:"delete",
@@ -409,8 +556,22 @@ $(document).ready(function(){
 
 
     });
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+    /**
+     *
+     * Create a Category
+     *
+     */
+
+     // create a new category to post into
     $('.createcat').on('click', function(e){
         e.preventDefault();
+        // get the name for the new category
         var newCat = $(this).closest('form').find('#newcat').val();
         $.ajaxSetup({
             headers: {
@@ -424,27 +585,42 @@ $(document).ready(function(){
                 'name': newCat
             },
             success: function(response){
+                // alert success
                 $('.alert').addClass('alert-success');
                 $('.alert').html(response);
                 $('.alert').fadeIn();
             },
             error: function (response) {
+                // alert error
                 $('.alert').addClass('alert-danger');
                 $('.alert').html(response);
                 $('.alert').fadeIn();
             }
         });
     });
-    $('.alert').on('click', function(){
-        $('.alert').fadeOut(2000);
-    });
 
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+    /**
+     *
+     *  Direct Messaging
+     *
+     */
+
+     // setup a message to a user by clicking on their user name
     $('.useroptions').on('click', function(e){
         e.preventDefault();
+        // get vars
         var reciever = $(this).attr('data-id');
         var name = $(this).attr('data-name');
+        // set form values
         $('#user-name').html(name);
         $('#recieve').val(reciever);
+        // open the message modal
         $('.message-modal').fadeIn(function(){
             $('.message-form').on('click', function(e){
                 e.stopPropagation();
@@ -456,11 +632,14 @@ $(document).ready(function(){
 
     });
 
+    // send a new message
     $('#message-sub').on('click', function(e){
         e.preventDefault();
+        // get the values
         var recieve = $('#recieve').val();
         var message = $('#message').val();
         var subject = $('#subject').val();
+        // send the data
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -475,9 +654,11 @@ $(document).ready(function(){
                 'subject': subject
             },
             success: function(response){
+                // fade out modal
                 $('.message-modal').fadeOut();
             },
             error: function (response) {
+                // display an error
                 $('.message-form').find('.alert').addClass('alert-danger').html('Your message could not be sent.');
                 $('.alert').on('click', function(){
                     $('.alert').fadeOut(2000);
@@ -486,8 +667,11 @@ $(document).ready(function(){
         });
     });
 
+
+    // mark a message as read
     $('.read').on('click', function(e){
         e.preventDefault();
+        // get msg id
         var msg = $(this).attr('data-msg');
         $.ajaxSetup({
             headers: {
@@ -508,9 +692,12 @@ $(document).ready(function(){
             }
         });
 
-    })
+    });
+
+    // delete a message
     $('.del').on('click', function(e){
         e.preventDefault();
+        // get message id
         var msg = $(this).attr('data-msg');
         $.ajaxSetup({
             headers: {
@@ -533,11 +720,14 @@ $(document).ready(function(){
 
     });
 
+    // reply to a user using the reply button
     $('.reply-btn').on('click', function(e){
         e.preventDefault();
+        // get msg info
         var name = $(this).closest('article').find('.useroptions').attr('data-name');
         var reciever = $(this).attr('data-to');
         var parent = $(this).attr('data-msg');
+        // set up the reply form
         $('.message-reply').find('#parent').val(parent);
         $('.message-reply').find('#recieve').val(reciever);
         $('.message-reply').find('#user-name').html(name);
@@ -549,8 +739,10 @@ $(document).ready(function(){
         });
     });
 
+    // send a message reply
     $('#message-rep').on('click', function(e){
         e.preventDefault();
+        // get values
         var parent = $(this).closest('.message-form').find('#parent').val();
         var message = $(this).closest('.message-form').find('#message').val();
         var recieve = $(this).closest('.message-form').find('#recieve').val();
@@ -569,9 +761,11 @@ $(document).ready(function(){
                 'parent': parent
             },
             success: function(response){
+                // success close modal
                 $('.message-modal').fadeOut();
             },
             error: function (response) {
+                // alert error
                 $('.message-form').find('.alert').addClass('alert-danger').html('Your message could not be sent.');
                 $('.alert').on('click', function(){
                     $('.alert').fadeOut(2000);
@@ -579,32 +773,19 @@ $(document).ready(function(){
             }
         });
     });
-    $('.hide-rep').on('click', function(e){
-        e.preventDefault();
-        $(this).closest('article').find('.replies').slideToggle();
-        if($(this).text() == "Hide Replies"){
-            $(this).text("Show Replies");
-        }
-        else{
-            $(this).text("Show Replies");
-        }
-    });
-    $('.replies').each(function(i){
-        if($(this).children().length === 0){
-            $(this).closest('article').find('.hide-rep').hide();
-        }
-        else{
-            $(this).closest('article').find('.hide-rep').show();
-        }
-    });
+
+    // reply by clicking a user name in message box
     $('.useroptionsrep').on('click', function(e){
         e.preventDefault();
+        // get data
         var reciever = $(this).attr('data-id');
         var name = $(this).attr('data-name');
         var parent = $(this).attr('data-msg');
+        // set up form data
         $('.message-reply').find('#user-name').html(name);
         $('.message-reply').find('#recieve').val(reciever);
         $('.message-reply').find('#parent').val(parent);
+        // open form
         $('.message-reply').fadeIn(function(){
             $('.message-form').on('click', function(e){
                 e.stopPropagation();
@@ -617,10 +798,17 @@ $(document).ready(function(){
     });
 
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
 // call functions
 getMsgs();
 catSearch();
 closeModal();
 cancelListen();
+
+
+
 // End JS
 })

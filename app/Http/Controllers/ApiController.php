@@ -1,8 +1,8 @@
 <?php
 /**
  * Daniel Cobb
- * ASL - nmbley v1.0
- * 1-8-2017
+ * ASL - nmbley v2.0
+ * 1-22-2017
  */
 
 namespace app\Http\Controllers;
@@ -137,6 +137,12 @@ class ApiController extends Controller
         $id = $request->id;
         DB::table('follows')->where('catId', $id)->where('userId', $user)->delete();
     }
+
+    /**
+     * like a post
+     * @param  Request $request [array]
+     * @return null
+     */
     public function like(Request $request)
     {
         $user = session('id');
@@ -146,6 +152,12 @@ class ApiController extends Controller
         $like->save();
 
     }
+
+    /**
+     * unlike a post
+     * @param  Request $request [array]
+     * @return null
+     */
     public function unlike(Request $request)
     {
         $user = session('id');
@@ -153,6 +165,12 @@ class ApiController extends Controller
         $unlike = DB::table('likes')->where([['postId', $post], ['userId', $user]])->delete();
         return response($unlike);
     }
+
+    /**
+     * create a new category
+     * @param  Request $request [array]
+     * @return string           [success/failure message]
+     */
     public function newCategory(Request $request)
     {
         $newcategory = $request->name;
@@ -168,6 +186,12 @@ class ApiController extends Controller
             return 'Category Created!';
         }
     }
+
+    /**
+     * send a message to a user
+     * @param  Request $request [array]
+     * @return string           [success message]
+     */
     public function sendMessage(Request $request)
     {
         $sender = session('id');
@@ -186,11 +210,21 @@ class ApiController extends Controller
 
     }
 
+    /**
+     * check if a user has unread mail
+     * @return array [user messages]
+     */
     public function gotMail()
     {
         $msg = DB::table('messages')->where([['reciever', session('id')], ['read', '0']])->get();
         return($msg);
     }
+
+    /**
+     * mark a message as read
+     * @param  Request $request [array]
+     * @return string           [success message]
+     */
     public function read(Request $request)
     {
         DB::table('messages')
@@ -198,6 +232,12 @@ class ApiController extends Controller
         ->update(['read'=>1]);
         return 'success';
     }
+
+    /**
+     * marked as deleted by reader
+     * @param  Request $request [array]
+     * @return string           [success message]
+     */
     public function deleteMsgR(Request $request)
     {
         DB::table('messages')
@@ -205,6 +245,12 @@ class ApiController extends Controller
         ->update(['readdel'=>1, 'read'=>1]);
         return 'success';
     }
+
+    /**
+     * marked as deleted by sender
+     * @param  Request $request [array]
+     * @return string           [success message]
+     */
     public function deleteMsgS(Request $request)
     {
         DB::table('messages')
@@ -213,6 +259,11 @@ class ApiController extends Controller
         return 'success';
     }
 
+    /**
+     * add a message reply
+     * @param  Request $request [array]
+     * @return string           [success message]
+     */
     public function replyMessage(Request $request)
     {
         $sender = session('id');
@@ -231,4 +282,47 @@ class ApiController extends Controller
         ->update(['read'=>0]);
         return 'Message Sent';
     }
+
+    /*public function homeView()
+    {
+        // get the user id
+        $id = session('id');
+        // get followed categories
+        $cats = DB::table('follows')
+        ->join('categorys', 'categorys.catId', '=', 'follows.catId')
+        ->where('userId', $id)
+        ->get();
+        // get posts from followed
+        $posts = DB::table('follows')
+        ->join('posts', 'follows.catId', '=', 'posts.categoryId')
+        ->join('categorys', 'follows.catId', '=', 'categorys.catId')
+        ->join('users', 'posts.user', '=', 'users.userId')
+        ->leftJoin('likes', [['likes.postId', '=', 'posts.postId'], ['likes.userId', '=', 'follows.userId']])
+        ->select('follows.catId', 'posts.*', 'categorys.*', 'users.*', 'likes.postId as liked', 'likes.userId as likedBy')
+        ->where('follows.userId', $id)
+        ->latest('posts.created_at')
+        ->get();
+        // get the comments for posts
+        $comments = DB::table('comments')
+        ->join('users', 'comments.userId', 'users.userId')
+        ->select('comments.*', 'users.fname as first', 'users.lname as last')
+        ->oldest()
+        ->get();
+        // get user likes
+        $likes = DB::table('likes')
+        ->select('likes.postId as likedPost')
+        ->where('likes.userId', session('id'))
+        ->get();
+        // get replies
+        $replies = DB::table('commentRelatives')
+        ->join('comments', 'comments.commentId', 'commentRelatives.commentId')
+        ->join('users', 'users.userId', 'comments.userId')
+        ->oldest()
+        ->get();
+        $admin = DB::table('categorys')
+        ->where('adminId', $id)
+        ->get();
+        $msg = DB::table('messages')->where('reciever', session('id'))->get();
+        return response($posts->toArray());
+    }*/
 }
