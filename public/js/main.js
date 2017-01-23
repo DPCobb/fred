@@ -724,7 +724,7 @@ $(document).ready(function(){
     $('.reply-btn').on('click', function(e){
         e.preventDefault();
         // get msg info
-        var name = $(this).closest('article').find('.useroptions').attr('data-name');
+        var name = $(this).attr('data-name');
         var reciever = $(this).attr('data-to');
         var parent = $(this).attr('data-msg');
         // set up the reply form

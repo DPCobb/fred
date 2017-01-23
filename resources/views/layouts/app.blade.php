@@ -38,7 +38,7 @@
                             <li><a href="/signout" title="Sign Out"><i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
                             <li><a href="/home" title="Home"><i class="fa fa-home" aria-hidden="true"></i></a></li>
                             <li><a href="/messages/'.$id.'" title="Messages" id="messages"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></li>
-                            <li class="visible-xs"><a href="/links" title="Links"><i class="fa fa-bars" aria-hidden="true"></i></a></li>
+                            <li class="visible-xs"><a href="/links" title="Links"><i class="fa fa-cog" aria-hidden="true"></i></a></li>
                         </ul>
 
 

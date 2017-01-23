@@ -1,5 +1,5 @@
 @foreach ($msgs as $msg)
-@if($msg->read === 0)
+@if($msg->read === 0 && $msg->readdel === 0)
 <article class="text-post">
     <h5>{{$msg->subject}}</h5>
     <h6>From: <a href="#" class="useroptionsrep" data-msg="{{$msg->msgId}}" data-id="{{$msg->sender}}" data-name="{{$msg->senderfirst}} {{$msg->senderlast}}">{{$msg->senderfirst}} {{$msg->senderlast}}</a> at {{$msg->created_at}}</h6>
@@ -18,13 +18,13 @@
     <div class="actions">
         <button class="read" data-msg="{{$msg->msgId}}">Mark As Read</button>
         <button class="del" data-msg="{{$msg->msgId}}">Delete</button>
-        <button class="reply-btn" data-msg="{{$msg->msgId}}" data-to="{{$msg->sender}}">Reply</a>
+        <button class="reply-btn" data-msg="{{$msg->msgId}}" data-to="{{$msg->sender}}" data-name="{{$msg->senderfirst}} {{$msg->senderlast}}">Reply</a>
     </div>
 </article>
-@elseif($msg->read === 1)
+@elseif($msg->read === 1 && $msg->readdel === 0)
 <article class="text-post">
     <h5>{{$msg->subject}}</h5>
-    <h6>From: <a href="#" class="useroptions" data-msg="{{$msg->msgId}}" data-id="{{$msg->sender}}" data-name="{{$msg->senderfirst}} {{$msg->senderlast}}">{{$msg->senderfirst}} {{$msg->senderlast}}</a></h6>
+    <h6>From: <a href="#" class="useroptionsrep" data-msg="{{$msg->msgId}}" data-id="{{$msg->sender}}" data-name="{{$msg->senderfirst}} {{$msg->senderlast}}">{{$msg->senderfirst}} {{$msg->senderlast}}</a></h6>
     <p>{{$msg->text}}</p>
     <a href="#" class="small-link hide-rep">Show Replies</a>
     <div class="replies">
@@ -39,7 +39,7 @@
     </div>
     <div class="actions">
         <button class="del" data-msg="{{$msg->msgId}}">Delete</button>
-        <button class="reply-btn" data-msg="{{$msg->msgId}}" data-to="{{$msg->sender}}">Reply</a>
+        <button class="reply-btn" data-msg="{{$msg->msgId}}" data-to="{{$msg->sender}}" data-name="{{$msg->senderfirst}} {{$msg->senderlast}}">Reply</a>
     </div>
 </article>
 @else
