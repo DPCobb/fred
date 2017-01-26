@@ -25,8 +25,11 @@ class PostController extends Controller
      */
     public function post($type, Request $request)
     {
+        $catJ = DB::table('categorys')->select('catId')->where('name', strtolower($request->cat))->first();
+        $bans = DB::table('bans')->where([['userId', session('id')], ['catId', $catJ->catId]])->get();
         // text post
-        if ($type == 'text') {
+        if(empty($bans)){
+            if ($type == 'text') {
             // validate
             $validator = Validator::make($request->all(), [
                 'title' => 'required|max:240',
@@ -112,8 +115,15 @@ class PostController extends Controller
             $comment->commentId = substr(hash('md5', time() . session('id')), 0, 10);
             $comment->save();
             return redirect('/home');
-        } else {
         }
+        else{
+
+        }
+    }
+    else{
+        $catJ = DB::table('categorys')->select('catId')->where('name', strtolower($request->cat))->first();
+        return redirect('/home/banned/'.$catJ->catId);
+    }
     }
     /**
      * Delete comment removes a comment
@@ -181,9 +191,10 @@ class PostController extends Controller
             ->join('users', 'posts.user', '=', 'users.userId')
             ->leftJoin('likes', [['likes.postId', '=', 'posts.postId'], ['likes.userId', '=', 'users.userId']])
             ->select('posts.*', 'categorys.*', 'users.*', 'likes.postId as liked', 'likes.userId as likedBy')
-            ->where('categorys.name', $category)
+            ->where([['categorys.name', $category], ['posts.mod_del', null]])
             ->latest('posts.created_at')
-            ->get();
+            ->paginate(10);
+            //->get();
             $comments = DB::table('comments')
             ->join('users', 'comments.userId', 'users.userId')
             ->select('comments.*', 'users.fname as first', 'users.lname as last')

@@ -33,6 +33,7 @@ Route::get('/home', 'HomeController@homeView');
 Route::get('/links', 'HomeController@links');
 Route::post('home/{type}', 'PostController@post');
 Route::delete('/home/comment/delete/{id}', 'PostController@deleteComment');
+Route::get('/home/banned/{catban}', 'HomeController@homeBannedView');
 
 //Activity - my posts, delete posts etc
 Route::get('/activity/myposts', 'MyContent@getInfo');
@@ -58,8 +59,11 @@ Route::post('/api/message/markread', 'ApiController@read');
 Route::post('/api/message/deleteread', 'ApiController@deleteMsgR');
 Route::post('/api/message/deletesend', 'ApiController@deleteMsgS');
 Route::post('/api/message/reply', 'ApiController@replyMessage');
+Route::get('/api/home', 'ApiController@homeView');
+Route::get('/api/count', 'ApiController@getCount');
+Route::post('/api/report', 'ApiController@report');
 
-//Route::get('/api/home', 'ApiController@homeView');
+
 
 // Post Updates
 Route::post('/update/photo', 'PostController@editPhoto');
@@ -68,6 +72,21 @@ Route::post('/update/comment', 'PostController@editComment');
 
 // Messages View
 Route::get('/messages/{id}', 'MessageController@messageView');
+
+// Mod View
+Route::get('/mod/{id}', 'ModController@modView');
+Route::post('/mod/unflag', 'ModController@unflag');
+Route::post('/mod/addmod', 'ModController@addMod');
+Route::post('/mod/removemod', 'ModController@removeMod');
+Route::get('/mod/mods/{cat}', 'ModController@getMods');
+Route::get('/mod/bans/{cat}', 'ModController@getBans');
+Route::post('/mod/modpost', 'ModController@modPost');
+Route::post('/mod/banuser', 'ModController@banUser');
+Route::post('/mod/unbanuser', 'ModController@unbanUser');
+Route::post('/mod/delpost', 'ModController@delPost');
+Route::post('/mod/senddelmsg', 'ModController@sendDelMessage');
+Route::post('/mod/comment/delete', 'ModController@deleteComment');
+
 
 // Not yet used route for logging out
 Route::get('/signout', function () {

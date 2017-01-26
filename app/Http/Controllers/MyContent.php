@@ -37,7 +37,7 @@ class MyContent extends Controller
         ->select('posts.*', 'categorys.*', 'users.*', 'likes.postId as liked', 'likes.userId as likedBy')
         ->where('posts.user', $myId)
         ->latest('posts.created_at')
-        ->get();
+        ->paginate(10);
         // get comments
         $comments = DB::table('comments')
         ->join('users', 'comments.userId', 'users.userId')

@@ -283,7 +283,7 @@ class ApiController extends Controller
         return 'Message Sent';
     }
 
-    /*public function homeView()
+    public function homeView()
     {
         // get the user id
         $id = session('id');
@@ -299,9 +299,10 @@ class ApiController extends Controller
         ->join('users', 'posts.user', '=', 'users.userId')
         ->leftJoin('likes', [['likes.postId', '=', 'posts.postId'], ['likes.userId', '=', 'follows.userId']])
         ->select('follows.catId', 'posts.*', 'categorys.*', 'users.*', 'likes.postId as liked', 'likes.userId as likedBy')
-        ->where('follows.userId', $id)
+        ->where([['follows.userId', $id], ['mod_del', null]])
         ->latest('posts.created_at')
-        ->get();
+        ->paginate(4);
+        //->get();
         // get the comments for posts
         $comments = DB::table('comments')
         ->join('users', 'comments.userId', 'users.userId')
@@ -323,6 +324,34 @@ class ApiController extends Controller
         ->where('adminId', $id)
         ->get();
         $msg = DB::table('messages')->where('reciever', session('id'))->get();
-        return response($posts->toArray());
-    }*/
+        $contents = view('common/postdisplay',['cats'=>$cats, 'posts'=>$posts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies, 'admin'=>$admin, 'msg'=>$msg])->render();
+        return ($contents);
+    }
+
+    public function getCount()
+    {
+        $id = session('id');
+        $posts = DB::table('follows')
+        ->join('posts', 'follows.catId', '=', 'posts.categoryId')
+        ->join('categorys', 'follows.catId', '=', 'categorys.catId')
+        ->join('users', 'posts.user', '=', 'users.userId')
+        ->leftJoin('likes', [['likes.postId', '=', 'posts.postId'], ['likes.userId', '=', 'follows.userId']])
+        ->select('follows.catId', 'posts.*', 'categorys.*', 'users.*', 'likes.postId as liked', 'likes.userId as likedBy')
+        ->where('follows.userId', $id)
+        ->latest('posts.created_at')
+        ->paginate();
+        return $posts->count();
+
+    }
+
+    public function report(Request $request)
+    {
+        $postId = $request->id;
+        DB::table('posts')
+        ->where('postId', $postId)
+        ->update(['flagged'=>1]);
+    }
+
+
+
 }

@@ -5,6 +5,157 @@
  */
 $(document).ready(function(){
 
+    /**
+     *
+     * Infinite Scroll
+     *
+     */
+
+    // set the page number
+    var page = 1;
+    // set how many posts to return
+    var count = 4;
+    // was the screen scrolled
+    var scrolled = false;
+    // should we send an ajax request for another post
+    var getpost = true;
+    // are we already processing a request
+    var working = 0;
+    // total number of posts eventually returned
+    var totalPosts;
+    // the total pages = posts/count rounded up to nearest whole number
+    var pages;
+
+
+    // gets a count for the total posts that will be returned
+    function getCount(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type:"GET",
+            url:"/api/count",
+            success: function(response){
+                // set the total into local storage
+                localStorage.setItem('totalpost', response);
+                // set total posts to stored value
+                var totalPosts = localStorage.totalpost;
+                // find the total number of pages that will be displayed
+                var pages = Math.ceil(parseInt(totalPosts)/count);
+            },
+            error: function (response) {
+                console.log(response)
+            }
+        });
+
+    }
+    // get the count
+    getCount();
+
+    // if the window is scrolled set scrolled to true
+    $(window).scroll(function(){
+        scrolled = true;
+    });
+
+    // check to see if we should load more pages
+    setInterval(function() {
+        // scrolled and getpost are both true
+        if (scrolled && getpost){
+            // set scrolled to false
+           scrolled = false;
+           // if (doc height - window height) - distance to top < 20
+           if(($(document).height() - $(window).height()) - $(window).scrollTop() < 200){
+               // if page var is greater than the max pages possible do nothing
+               if(page > pages){
+
+               }
+               // else call getPosts
+               else{
+                   if(working === 0 ){
+                       getPosts();
+                   }
+               }
+           }
+       }
+   }, 500);
+
+   // returns the posts
+    function getPosts(){
+        working = 1
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type:"GET",
+            // gets the next page of results
+            url:"/api/home?page="+page,
+            beforeSend: function(){
+                // show the loading spinner
+                $('#loading').show();
+
+            },
+            complete: function(){
+                //hide loading spinner
+                $('#loading').hide();
+            },
+            success: function(response){
+                    // set get post to false
+                    getpost = false;
+                    // if there are less results than the set post count
+                    if($(response).filter('.text-post').length < count){
+                        // if page is greater than the max pages
+                        if(page > pages){
+                            $('#end').show();
+                        }
+                        // append the response to the feed
+                        else{
+                            $('#feed').append(response)
+                            // show the no more results message
+                            $('#end').show();
+                            // make sure getpost is false
+                            getpost = false;
+                        }
+                    }
+                    // if there are more results
+                    else{
+                        // if page is greater than the max pages
+                        if(page > pages){
+                            //$('#end').show();
+                        }
+                        else{
+                            // set get post to true
+                            getpost = true;
+                            // append the response
+                            $('#feed').append(response)
+                            working = 0
+                        }
+                    }
+                    page ++;
+                    $('.comments').each(function(i){
+                        if($(this).children().length === 0){
+                            $(this).closest('article').find('.comment').hide();
+                        }
+                        else{
+                            $(this).closest('article').find('.comment').show();
+                        }
+                    });
+                    $('form').on('click', function(e){
+                        e.stopPropagation();
+                    });
+            },
+            error: function (response) {
+                console.log(response)
+            }
+        });
+
+    }
+    // call getposts to set up initial posts
+    getPosts();
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -17,17 +168,21 @@ $(document).ready(function(){
  */
 
     // Stop Modal Forms from closing Modal
-    $('form').on('click', function(e){
+    $(document).on('click','form', function(e){
+        e.stopPropagation();
+    });
+
+    $(document).on('click','.comment-form', function(e){
         e.stopPropagation();
     });
 
     // Confirmation for delete
-    $('.delete-form').on('submit', function(){
+    $(document).on('submit','.delete-form', function(){
         return confirm("This is forever, are you sure??");
     });
 
     // alert area fade out
-    $('.alert').on('click', function(){
+    $(document).on('click','.alert', function(){
         $('.alert').fadeOut(2000);
     });
 
@@ -77,13 +232,13 @@ $(document).ready(function(){
     });
 
     // toggle the add comment form
-    $('.blue-action').on('click', function(e){
+    $(document).on('click','.blue-action', function(e){
         e.preventDefault();
         $(this).closest('article').find('.add-comment').slideToggle();
     });
 
     // toggle the current comments
-    $('.comment').on('click', function(e){
+    $(document).on('click','.comment', function(e){
         e.preventDefault();
         $(this).closest('article').find('.comments').slideToggle();
         if($(this).text() == "View Comments"){
@@ -275,7 +430,7 @@ $(document).ready(function(){
      */
 
     // submits a reply to a comment
-    $('#reply-submit').on('click', function(e){
+    $(document).on('click','#reply-submit', function(e){
         e.preventDefault();
         // Set needed values
         var postId = $('#replypostid').val();
@@ -308,7 +463,7 @@ $(document).ready(function(){
 
 
     // set up the reply modal data
-    $('.reply').on('click', function(e){
+    $(document).on('click','.reply', function(e){
         // get needed values
         var postId = $(this).attr('data-postid');
         var commentId = $(this).attr('data-commentid');
@@ -332,7 +487,7 @@ $(document).ready(function(){
      */
 
     // edit a post
-    $('.edit').on('click', function(e){
+    $(document).on('click','.edit', function(e){
         e.preventDefault();
         var post = $(this).attr('data-postid');
         localStorage.setItem('post', post);
@@ -378,7 +533,7 @@ $(document).ready(function(){
     });
 
     // edit a comment
-    $('.com-edit').on('click', function(e){
+    $(document).on('click','.com-edit', function(e){
         var commentid = $(this).attr('data-commentid');
         e.preventDefault();
         $('.comment-edit').fadeIn(function(){
@@ -415,7 +570,8 @@ $(document).ready(function(){
         if(data.length === 0){
             $('.cat-list').html('');
         }
-        $.ajax({
+        else{
+            $.ajax({
             type: "GET",
             url: "/api/category/search/"+ data,
             dataType: "json",
@@ -435,6 +591,7 @@ $(document).ready(function(){
                 }
             }
         });
+        }
     });
 
 
@@ -448,7 +605,7 @@ $(document).ready(function(){
      */
 
     // follow a category
-    $('#catfollow').on('click', function(e){
+    $(document).on('click','#catfollow', function(e){
         e.preventDefault();
         var data = $(this).attr('data-id');
         // set up the csrf token
@@ -474,7 +631,7 @@ $(document).ready(function(){
     });
 
     // unfollow a category
-    $('#catunfollow').on('click', function(e){
+    $(document).on('click','#catunfollow', function(e){
         e.preventDefault();
         var data = $(this).attr('data-id');
         // set up csrf token
@@ -511,11 +668,14 @@ $(document).ready(function(){
      */
 
      // Like/Unlike a post
-    $('.orange-action').on('click', function(){
+    $(document).on('click','.orange-action', function(){
         // get the action to follow
         var action = $(this).attr('data-action');
         // get the post id
         var id = $(this).attr('data-id');
+        var target = $(this);
+        var points = $(this).closest('article').find('.pointdisplay').attr('data-points');
+        console.log(points)
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -530,7 +690,13 @@ $(document).ready(function(){
                     'id': id
                 },
                 success: function(){
-                    location.reload();
+                    target.html('<i class="fa fa-heart" aria-hidden="true">')
+                    target.attr('data-action', 'unlike')
+                    console.log(points)
+                    newPoints = parseInt(points) + 1
+                    target.closest('article').find('.pointdisplay').html(newPoints)
+                    target.closest('article').find('.pointdisplay').attr('data-points', newPoints)
+                    console.log(newPoints)
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -546,7 +712,15 @@ $(document).ready(function(){
                     'id': id
                 },
                 success: function(){
-                    location.reload();
+                    target.html('<i class="fa fa-heart-o" aria-hidden="true">')
+                    target.attr('data-action', 'like')
+                    if(parseInt(points) > 0){
+                        target.closest('article').find('.pointdisplay').html(parseInt(points) - 1)
+                        target.closest('article').find('.pointdisplay').attr('data-points', parseInt(points) - 1)
+                    }
+                    else{
+
+                    }
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -612,7 +786,7 @@ $(document).ready(function(){
      */
 
      // setup a message to a user by clicking on their user name
-    $('.useroptions').on('click', function(e){
+    $(document).on('click','.useroptions', function(e){
         e.preventDefault();
         // get vars
         var reciever = $(this).attr('data-id');
@@ -797,6 +971,39 @@ $(document).ready(function(){
 
     });
 
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+    /**
+     *
+     * Report a Post
+     *
+     */
+
+     $(document).on('click', '.reportpost', function(e){
+         e.preventDefault();
+         var target = $(this);
+         var postId = target.attr('data-id');
+         $.ajaxSetup({
+             headers: {
+                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+             }
+         });
+         $.ajax({
+             type:"POST",
+             url:"/api/report",
+             data:{
+                 'id': postId
+             },
+             success: function(response){
+                target.hide();
+             },
+             error: function (response) {
+                 console.log(response)
+             }
+         });
+     });
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

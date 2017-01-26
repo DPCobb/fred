@@ -11,11 +11,11 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,800" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
-    <link href="../libs/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/libs/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
-    <link href="../css/app.css" rel="stylesheet" type="text/css">
-    <link href="../css/main.css" rel="stylesheet" type="text/css">
+    <link href="/css/app.css" rel="stylesheet" type="text/css">
+    <link href="/css/main.css" rel="stylesheet" type="text/css">
 
     <!-- ReactJS
     <script src="https://unpkg.com/react@15/dist/react.js"></script>
@@ -52,7 +52,8 @@
         </div>
 
         @yield('content')
-        <script src="../js/app.js"></script>
-        <script src="../js/main.js"></script>
+        <script src="/js/app.js"></script>
+        <script src="/js/main.js"></script>
+        <script src="/js/mod.js"></script>
     </body>
 </html>

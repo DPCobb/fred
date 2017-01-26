@@ -52,6 +52,9 @@
 .row{
     max-width: 100%;
 }
+.alert:hover{
+    cursor: pointer;
+}
 @media screen and (max-width:768px){
     .row, .article, form{
         float:none;
@@ -129,7 +132,7 @@ h3, h4{
 h1{
     display:inline-block;
 }
-.comment-form-reply h5{
+.comment-form-reply h5, .mod-rep h5{
     color:#fff;
 }
 a{
@@ -150,7 +153,7 @@ form{
 .cat-form{
     height:250px;
 }
-.comment-form, .comment-form-edit{
+.comment-form, .comment-form-edit, .mod-rep{
     background:none;
     border-radius:0;
     box-shadow:none;
@@ -158,7 +161,7 @@ form{
     text-align: left;
     height:60px;
 }
-.comment-form-reply, .comment-form-edit{
+.comment-form-reply, .comment-form-edit, .mod-rep{
     width:50vw;
     height:25vh;
     margin:10% auto;
@@ -172,7 +175,7 @@ input[type="text"], textarea{
     border:1px solid #d0d3d6;
     margin:auto;
 }
-.comment-form input[type="text"], .comment-form-edit input[type="text"]{
+.comment-form input[type="text"], .comment-form-edit input[type="text"], .mod-rep input[type="text"]{
     width:80%;
     margin:auto 2%;
 }
@@ -203,10 +206,10 @@ button[type="submit"]{
     color:#fff;
     transition-duration: 500ms;
 }
-button[type="submit"]:hover, .comment-form input[type="submit"]:hover, .comment-form-edit input[type="submit"]:hover{
+button[type="submit"]:hover, .comment-form input[type="submit"]:hover, .comment-form-edit input[type="submit"]:hover, .mod-rep input[type="submit"]:hover{
     transform:scale(1.1);
 }
-.comment-form input[type="submit"], .comment-form-edit input[type="submit"]{
+.comment-form input[type="submit"], .comment-form-edit input[type="submit"], .mod-rep input[type="submit"]{
     background:#629976;
     border:none;
     box-shadow:2px 3px 5px rgba(0,0,0,.4);
@@ -245,6 +248,7 @@ button[type="submit"]:hover, .comment-form input[type="submit"]:hover, .comment-
     right:15%;
 }
 
+
 article{
     margin:2% auto;
     width:96%;
@@ -253,6 +257,7 @@ article{
     border-radius:5px;
     box-shadow:2px 3px 5px rgba(0,0,0,.4);
     position: relative;
+    overflow: hidden;
 }
 article > h5{
     font-size:14pt;
@@ -351,6 +356,25 @@ article .orange-action{
     display:block;
 }
 
+#end{
+    display:none;
+    width:90%;
+    margin:2% auto;
+    float:none;
+    text-align: center;
+}
+#loading{
+    text-align: center;
+    display:none;
+    font-size:1.5em;
+    color:#BDC3C7;
+    padding:5%;
+}
+.pagination{
+    display:none;
+    margin:5% auto;
+}
+
 /*----- Comments -----*/
 .comments{
     display:none;
@@ -376,7 +400,7 @@ article .orange-action{
     bottom:5%;
     right:20%;
 }
-.delete-form{
+.delete-form, .mod-delete{
     background:none;
     width:auto;
     display:inline-block;
@@ -448,6 +472,7 @@ article .orange-action{
     padding:2%;
 }
 
+
 /*----- user options modal -----*/
 .message-form{
     width:50%;
@@ -490,6 +515,74 @@ article .orange-action{
     display:none;
 }
 
+
+/*----- mod page -----*/
+
+.mod-post img{
+    max-width:50%;
+}
+.mod-post{
+    position: relative;
+    overflow: hidden;
+}
+.flagged::before{
+    content:'Reported Post!';
+    position: absolute;
+    text-align: center;
+    width:300px;
+    height:30px;
+    top:30px;
+    right:-70px;
+    transform: rotate(30deg);
+    background:#b74c37;
+    font-weight: 800;
+    color:white;
+    box-shadow:2px 3px 5px rgba(0,0,0,.4);
+
+}
+.admin::before{
+    content:'Admin Post';
+    position: absolute;
+    text-align: left;
+    width:20%;
+    height:25px;
+    padding:0 2%;
+    top:0;
+    right:0;
+    background:#6988b7;
+    font-weight: 800;
+    color:white;
+    box-shadow:2px 3px 5px rgba(0,0,0,.4);
+}
+.mod-actions{
+    display:block;
+    width:100%;
+    margin:2% auto;
+}
+.mod-comment{
+    position:relative;
+}
+.mod-post-form > .red{
+    right:30%;
+}
+.mod-post-form{
+    height:240px;
+    margin-bottom:10%;
+}
+#mod-alert{
+    display:none;
+    margin:0 auto;
+}
+.btn-group > .btn-success{
+    box-shadow: none;
+}
+#banned {
+    display:block;
+    text-align: center;
+}
+.mods{
+    margin:2% 0;
+}
 /*----- media queries -----*/
 @media screen and (max-width:1100px){
     .red{

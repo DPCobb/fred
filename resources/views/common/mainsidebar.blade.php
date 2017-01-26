@@ -6,7 +6,7 @@
 @endforeach
 <h4>Categories I Moderate</h4>
 @foreach ($admin as $ad)
-    <h5><a href="/c/{{strtolower($ad->name)}}" title ="{{ucfirst(strtolower($ad->name))}}">{{ucfirst(strtolower($ad->name))}}</a></h5>
+    <h5><a href="/mod/{{$ad->catId}}" title ="{{ucfirst(strtolower($ad->name))}}">{{ucfirst(strtolower($ad->name))}}</a></h5>
 @endforeach
 <h4 class="create">Create a New Category</h4>
 <!-- Create new category form -->
