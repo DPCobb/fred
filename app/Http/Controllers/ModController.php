@@ -1,8 +1,8 @@
 <?php
 /**
  * Daniel Cobb
- * ASL - nmbley v2.0
- * 1-22-2017
+ * ASL - nmbley v3.0
+ * 1-25-2017
  */
 
 namespace app\Http\Controllers;
@@ -20,6 +20,11 @@ use Illuminate\Support\Facades\DB;
 
 class ModController extends Controller
 {
+    /**
+     * returns the mod view
+     * @param  integer $id [category id]
+     * @return array     [view]
+     */
     private function buildView($id)
     {
         $category = $id;
@@ -59,12 +64,17 @@ class ModController extends Controller
         return view('mod', ['posts'=>$posts, 'categoryName'=>$categoryName, 'catId'=>$category, 'msgs'=>$msg, 'comments'=>$comments, 'replies'=>$replies, 'mods'=>$mods]);
     }
 
+    /**
+     * calls buildView if the user is an admin
+     * @param  integer $id [category id]
+     * @return array/redirect     [returns view or a redirect to home]
+     */
     public function modView($id)
     {
         $currentCategory = $id;
         $user = session('id');
-        $categoryInfo = DB::table('categorys')
-        ->where([['adminId', $user],['catId', $currentCategory]])
+        $categoryInfo = DB::table('mods')
+        ->where([['userId', $user],['catId', $currentCategory]])
         ->get();
         if(!empty($categoryInfo)){
             return $this->buildView($id);
@@ -74,7 +84,11 @@ class ModController extends Controller
         }
     }
 
-
+    /**
+     * removes a flag on reported post
+     * @param  Request $request [form data]
+     * @return null
+     */
     public function unflag(Request $request)
     {
         $postId = $request->id;
@@ -83,17 +97,28 @@ class ModController extends Controller
         ->update(['flagged'=>null]);
     }
 
+    /**
+     * adds a moderator
+     * @param Request $request [form data]
+     */
     public function addMod(Request $request)
     {
+        $name = DB::table('categorys')->select('name')->where('catId', $request->catId)->first();
         $user = $request->id;
         $catId = $request->catId;
         $mod = new Mod;
         $mod->catId = $catId;
         $mod->userId = $user;
+        $mod->name = $name->name;
         $mod->adminAdd = session('id');
         $mod->save();
     }
 
+    /**
+     * removes a moderator
+     * @param  Request $request [form data]
+     * @return array           [response]
+     */
     public function removeMod(Request $request)
     {
         $user = $request->user;
@@ -102,6 +127,11 @@ class ModController extends Controller
         return response($remove);
     }
 
+    /**
+     * retrieves a list of mods
+     * @param  integer $cat [category id]
+     * @return array      [array of mods]
+     */
     public function getMods($cat)
     {
         $category = $cat;
@@ -110,6 +140,12 @@ class ModController extends Controller
         ->get();
         return($mods);
     }
+
+    /**
+     * returns banned users
+     * @param  integer $cat [category id]
+     * @return array      [banned users]
+     */
     public function getBans($cat)
     {
         $category = $cat;
@@ -119,6 +155,11 @@ class ModController extends Controller
         return($bans);
     }
 
+    /**
+     * post as a moderator
+     * @param  Request $request [form data]
+     * @return null
+     */
     public function modPost(Request $request)
     {
         $catJ = DB::table('categorys')->select('catId')->where('name', strtolower($request->cat))->first();
@@ -133,6 +174,11 @@ class ModController extends Controller
         $post->save();
     }
 
+    /**
+     * bans a user
+     * @param  Request $request [form data]
+     * @return null
+     */
     public function banUser(Request $request)
     {
         $user = $request->user;
@@ -144,12 +190,24 @@ class ModController extends Controller
         $ban->userId = $user;
         $ban->save();
     }
+
+    /**
+     * unbans a user
+     * @param  Request $request [form data]
+     * @return null
+     */
     public function unbanUser(Request $request)
     {
         DB::table('bans')
         ->where([['catId', $request->cat], ['userId', $request->user]])
         ->delete();
     }
+
+    /**
+     * deletes a users post
+     * @param  Request $request [form data]
+     * @return null
+     */
     public function delPost(Request $request)
     {
         DB::table('posts')
@@ -157,6 +215,11 @@ class ModController extends Controller
         ->update(['mod_del' => 1]);
     }
 
+    /**
+     * sends a preformatted delete message after post delete
+     * @param  Request $request [form data]
+     * @return null
+     */
     public function sendDelMessage(Request $request)
     {
         $postTitle = DB::table('posts')->select('title')->where('postId', $request->postId)->get();
@@ -175,6 +238,11 @@ class ModController extends Controller
         $message->save();
     }
 
+    /**
+     * deletes a comment
+     * @param  Request $request [form data]
+     * @return null
+     */
     public function deleteComment(Request $request)
     {
         // delete from db

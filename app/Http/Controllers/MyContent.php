@@ -55,8 +55,8 @@ class MyContent extends Controller
         ->join('users', 'users.userId', 'comments.userId')
         ->oldest()
         ->get();
-        $admin = DB::table('categorys')
-        ->where('adminId', $myId)
+        $admin = DB::table('mods')
+        ->where('userId', $myId)
         ->get();
         return view('myposts', ['cats'=>$cats, 'posts'=>$myPosts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies, 'admin'=>$admin]);
     }

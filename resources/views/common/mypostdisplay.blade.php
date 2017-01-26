@@ -25,6 +25,7 @@
                 {{ csrf_field() }}
                 <input type="text" name="newcom" id="newcom" required placeholder="Add your comment"/>
                 <input type="hidden" name="postid" id="postid" value="{{$post->postId}}" required/>
+                <input type="hidden" name="cat" id="cat" value="{{$post->name}}" required/>
                 <input type="submit" value="Comment"/>
             </form>
         </div>
@@ -52,6 +53,7 @@
                 {{ csrf_field() }}
                 <input type="text" name="newcom" id="newcom" required placeholder="Add your comment"/>
                 <input type="hidden" name="postid" id="postid" value="{{$post->postId}}" required/>
+                <input type="hidden" name="cat" id="cat" value="{{$post->name}}" required/>
                 <input type="submit" value="Comment"/>
             </form>
         </div>
@@ -85,6 +87,7 @@
                 {{ csrf_field() }}
                 <input type="text" name="newcom" id="newcom" required placeholder="Add your comment"/>
                 <input type="hidden" name="postid" id="postid" value="{{$post->postId}}" required/>
+                <input type="hidden" name="cat" id="cat" value="{{$post->name}}" required/>
                 <input type="submit" value="Comment"/>
             </form>
         </div>

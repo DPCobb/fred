@@ -1,3 +1,4 @@
+
 @foreach($posts as $post)
     @if ($post->type == 1)
         @if ($post->flagged == 1)

@@ -23,6 +23,7 @@ $(document).ready(function(){
             type:"GET",
             url:"/mod/mods/"+category,
             success: function(response){
+                // enable/disable adding as mod
                 $('.addmod').removeClass('disabled')
                 var total = response.length
                 var i = 0
@@ -38,6 +39,7 @@ $(document).ready(function(){
         });
     }
 
+    // retrieves the ban list
     function getBans(){
         var category = $('#handle').val()
         $.ajaxSetup({
@@ -52,6 +54,7 @@ $(document).ready(function(){
                 $('.mod-ban').removeClass('disabled')
                 var total = response.length
                 var i = 0
+                // change button for ban or unban
                 for(i; i < total; i++){
                     var target = $('.mod-ban[data-id="'+response[i].userId+'"]')
                     target.removeClass('mod-ban').addClass('mod-unban').text('Remove Ban')
@@ -111,6 +114,7 @@ $(document).ready(function(){
             var category = $('#handle').val();
             unbanUser(user, category);
         });
+        // deletes the post
         $('.mod-del').on('click', function(e){
             e.preventDefault();
             var post = $(this).attr('data-id');
@@ -123,6 +127,7 @@ $(document).ready(function(){
             modal.find('#user').val(user);
             modDel(post)
         });
+        // sends a message to user about post being deleted
         $('#mod-submit-reason').on('click',function(e){
             e.preventDefault()
             sendDelMessage();
@@ -181,7 +186,7 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                type:"post",
+                type:"POST",
                 url:"/mod/comment/delete",
                 data:{
                     'id': id
@@ -202,6 +207,7 @@ $(document).ready(function(){
     getMods();
     getBans();
 
+    // removes flag from reported post
     function removeFlag(id){
         var post = id;
         var target = $("article[data-key='"+id+"']");
@@ -217,6 +223,7 @@ $(document).ready(function(){
                 'id': post
             },
             success: function(response){
+                // remove the flagged class
                 target.removeClass('flagged');
                 target.find('.unflag').hide();
                 alert.html('Flag Removed!').show();
@@ -227,7 +234,7 @@ $(document).ready(function(){
         });
     }
 
-
+    // add a moderator
     function addMod(user, target, cat){
         var user = user;
         var target = target;
@@ -244,6 +251,7 @@ $(document).ready(function(){
                 'catId': cat
             },
             success: function(response){
+                // disable add mod
                 target.find('.addmod').addClass('disabled');
                 alert.html('Moderator Added!').show();
             },
@@ -253,7 +261,7 @@ $(document).ready(function(){
         });
     }
 
-
+    // remove moderator
     function removeMod(user, target, cat){
         var target = target;
         $.ajaxSetup({
@@ -269,6 +277,7 @@ $(document).ready(function(){
                 'cat': cat
             },
             success: function(response){
+                // hide the moderator
                 target.hide();
                 alert.html('Moderator Removed!').show();
                 getMods();
@@ -279,6 +288,7 @@ $(document).ready(function(){
         });
     }
 
+    // post as a mod
     function modPost(title, post, cat){
         $.ajaxSetup({
             headers: {
@@ -302,6 +312,7 @@ $(document).ready(function(){
         });
     }
 
+    // ban a user
     function banUser(user, category){
         $.ajaxSetup({
             headers: {
@@ -317,6 +328,7 @@ $(document).ready(function(){
             },
             success: function(response){
                 alert.html('User Banned!').show();
+                // getBans to update buttons
                 getBans();
             },
             error: function (response) {
@@ -324,6 +336,8 @@ $(document).ready(function(){
             }
         });
     }
+
+    // unban user
     function unbanUser(user, category){
         $.ajaxSetup({
             headers: {
@@ -339,6 +353,7 @@ $(document).ready(function(){
             },
             success: function(response){
                 alert.html('The Ban was lifted!').show();
+                // getBans to update buttons
                 getBans();
                 var target = $('.mod-unban[data-id="'+user+'"]')
                 target.html('<i class="fa fa-ban" aria-hidden="true"></i> Ban User');
@@ -351,6 +366,7 @@ $(document).ready(function(){
         });
     }
 
+    // del a post as a mod
     function modDel(post){
         $.ajaxSetup({
             headers: {
@@ -364,6 +380,7 @@ $(document).ready(function(){
                 'post': post
             },
             success: function(response){
+                // disable delete
                 alert.html('There goes that post!').show();
                 var target = $('.mod-del[data-id="'+post+'"]')
                 target.addClass('disabled')
@@ -374,7 +391,9 @@ $(document).ready(function(){
         });
     }
 
+    // send a message to user that their post was removed by a mod
     function sendDelMessage(){
+        // get the form info to pass
         var modal = $('.reason-modal')
         var postId = modal.find('#postid').val();
         var user = modal.find('#user').val();
@@ -404,6 +423,7 @@ $(document).ready(function(){
 
     }
 
+    // send a mod message
     function modSendMsg(reciever, subject, text){
         $.ajaxSetup({
             headers: {

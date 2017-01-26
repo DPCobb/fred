@@ -3,10 +3,10 @@
         <div class="well">
             {{$com->msg}}
             <h6>{{$com->first}} {{$com->last}} at {{$com->updated_at}}</h6>
-            <form class="mod-delete" action="/mod/delete/comment/{{$com->commentId}}" method="delete">
+            <form class="mod-delete" action="" method="delete">
                 {{ csrf_field() }}
                 {{ method_field('DELETE') }}
-                <button class="small-link-button" data-id="{{$com->commentId}}">Delete</button>
+                <button class="small-link-button mod-del-com" data-id="{{$com->commentId}}">Delete</button>
             </form>
             @foreach($replies as $reply)
                 @if ($reply->childId == $com->commentId)

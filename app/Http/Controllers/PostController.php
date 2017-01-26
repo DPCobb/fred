@@ -26,7 +26,7 @@ class PostController extends Controller
     public function post($type, Request $request)
     {
         $catJ = DB::table('categorys')->select('catId')->where('name', strtolower($request->cat))->first();
-        $bans = DB::table('bans')->where([['userId', session('id')], ['catId', $catJ->catId]])->get();
+        $bans = DB::table('bans')->where([['userId', session('id')], ['catId', $catJ->catId]])->first();
         // text post
         if(empty($bans)){
             if ($type == 'text') {

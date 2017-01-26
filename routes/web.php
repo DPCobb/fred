@@ -86,9 +86,3 @@ Route::post('/mod/unbanuser', 'ModController@unbanUser');
 Route::post('/mod/delpost', 'ModController@delPost');
 Route::post('/mod/senddelmsg', 'ModController@sendDelMessage');
 Route::post('/mod/comment/delete', 'ModController@deleteComment');
-
-
-// Not yet used route for logging out
-Route::get('/signout', function () {
-    return view('signout');
-});

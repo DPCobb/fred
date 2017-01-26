@@ -58,8 +58,8 @@ class HomeController extends Controller
         ->join('users', 'users.userId', 'comments.userId')
         ->oldest()
         ->get();
-        $admin = DB::table('categorys')
-        ->where('adminId', $id)
+        $admin = DB::table('mods')
+        ->where('userId', $id)
         ->get();
         $msg = DB::table('messages')->where('reciever', session('id'))->get();
         return view('home', ['cats'=>$cats, 'posts'=>$posts, 'comments'=>$comments, 'likes'=>$likes, 'replies'=>$replies, 'admin'=>$admin, 'msg'=>$msg]);

@@ -21,7 +21,7 @@
         <button type="submit" id="modpost"><i class="fa fa-check" aria-hidden="true"></i></button>
         <a href="#" id="cancelbutton" class="button-round red cancel"><i class="fa fa-times" aria-hidden="true"></i></a>
     </form>
-    <h4>Additional Moderators</h4>
+    <h4>Moderators</h4>
     @foreach($mods as $mod)
     <div class="btn-group mods" data-key="{{$mod->userId}}">
         <a href="#" class="btn btn-primary" data-id="{{$mod->userId}}">{{$mod->fname}} {{$mod->lname}}</a>
